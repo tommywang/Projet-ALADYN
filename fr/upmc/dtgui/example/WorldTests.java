@@ -21,7 +21,7 @@ public class		WorldTests {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		World world = new World() ;
+		MyWorld world = new MyWorld() ;
 		try {
 			sem.acquire() ;
 		} catch (InterruptedException e) {
