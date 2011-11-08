@@ -74,7 +74,8 @@ public class SensorDataSenderJavassist {
 	
 	public void updatePosition(ClassPool pool, CtClass robot) throws NotFoundException, CannotCompileException{
 		CtMethod run = pool.getMethod("SensorDataSender", "run");
-		run.insertAt(3, "System.out.println(\"CA MARCHE \");");
+		//run.insertAt(3, "System.out.println(\"CA MARCHE \");");
+		run.insertAfter("$0.dataQueue.clear() ;");
 	}
 	/**
 	"$0.dataQueue.add(lr.getPositioningData()) ;" +

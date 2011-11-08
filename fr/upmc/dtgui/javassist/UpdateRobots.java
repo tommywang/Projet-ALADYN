@@ -64,8 +64,8 @@ public class UpdateRobots {
 		adrj.doAll();
 		
 		/** create class SensorDataSender*/
-		SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist(pool, alr);
-		sdsj.doAll();		
+		//SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist(pool, alr);
+		//sdsj.doAll();		
 		
 		/** add missing fields */
 		
