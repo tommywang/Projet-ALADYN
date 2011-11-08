@@ -6,6 +6,10 @@ import javassist.*;
 
 public class UpdateRobots {
 	
+	//constructor
+	public UpdateRobots(){
+	}
+	
 	public static void main(String[] args) throws Throwable {
 		ClassPool pool = ClassPool.getDefault();
 		
@@ -14,58 +18,7 @@ public class UpdateRobots {
 		
 		/**add missing fields*/
 		
-		/**
-		//field myslef
-		CtField my = new CtField(alr, "myself", alr);
-		my.setModifiers(Modifier.PROTECTED);
-		my.setModifiers(Modifier.STATIC);
-		alr.addField(my);
-		*/
-		
-		/** create class SteeringData */
-		SteeringDataJavassist stdj = new SteeringDataJavassist(pool, alr);
-		stdj.doAll();
-		
 		/** add missing methods */
-		
-		//method getPositioningData
-		CtMethod gpd = CtNewMethod.make(
-				"public synchronized fr.upmc.dtgui.robot.PositioningData	getPositioningData() {\n" +
-					"return new fr.upmc.dtgui.robot.PositioningData(\n" +
-									"$0.getX(), $0.getY(), this.getDirection()) ;\n" +
-				"}",
-				alr);
-		alr.addMethod(gpd);		
-		
-		//method getSteeringData
-		CtMethod gsd = CtNewMethod.make(
-				"public synchronized SteeringData	getSteeringData() {\n" +
-					"return new SteeringData($0.getSteeringAngle()) ;\n" +
-				"}",
-				alr);
-		alr.addMethod(gsd);
-		
-		/** create class SteeringChange*/
-		SteeringChangeJavassist stcj = new SteeringChangeJavassist(pool, alr);
-		stcj.doAll();
-		
-		//method makeSteeringChange
-		CtMethod msc = CtNewMethod.make(
-				"public static fr.upmc.dtgui.robot.RobotActuatorCommand	makeSteeringChange(double newSteeringAngle)\n" +
-				//"public static void	makeSteeringChange(double newSteeringAngle)\n" +
-				"{\n" +
-					"return new SteeringChange($1);\n" +
-				"}",
-				alr);
-		alr.addMethod(msc);
-		
-		/** create class ActuatorDataReceptor*/
-		ActuatorDataReceptorJavassist adrj = new ActuatorDataReceptorJavassist(pool, alr);
-		adrj.doAll();
-		
-		/** create class SensorDataSender*/
-		SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist(pool, alr);
-		sdsj.doAll();		
 		
 		/** add missing fields */
 		
