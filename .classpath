@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Kinto&apos;un/eclipse workspaces/workspace J2EE/javassist-3.15.0-GA/javassist.jar"/>
+	<classpathentry kind="lib" path="/Users/shiyue/Documents/workspace/javassist.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

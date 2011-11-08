@@ -85,8 +85,6 @@ public class UpdateManager {
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 	
 	//add missing code when reading the corresponding annotation
 	public void updateActuators(Object ann) throws CannotCompileException, RuntimeException, NotFoundException{	
@@ -173,5 +171,4 @@ public class UpdateManager {
 		this.tabClasses.get(cl).put(met, str);
 	}
 	
->>>>>>> benoit
 }

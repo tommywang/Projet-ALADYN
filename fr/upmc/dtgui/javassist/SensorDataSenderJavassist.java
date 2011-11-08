@@ -84,12 +84,12 @@ public class SensorDataSenderJavassist {
 		robot.addMethod(gsdq);
 	}
 	
-<<<<<<< HEAD
+/*
 	public void updatePosition(ClassPool pool, CtClass robot) throws NotFoundException, CannotCompileException{
 		CtMethod run = pool.getMethod("SensorDataSender", "run");
 		//run.insertAt(3, "System.out.println(\"CA MARCHE \");");
 		run.insertAfter("$0.dataQueue.clear() ;");
-=======
+*/
 	/** final update of the class SensorDataSender */
 	public void update(ClassPool pool, CtClass robot, UpdateManager uman) throws NotFoundException, CannotCompileException{
 		
@@ -110,6 +110,6 @@ public class SensorDataSenderJavassist {
 					"}\n" +
 				"}\n");
 		sds.addMethod(run);
->>>>>>> benoit
+
 	}
 }
