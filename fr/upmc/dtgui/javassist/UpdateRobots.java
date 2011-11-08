@@ -6,6 +6,10 @@ import javassist.*;
 
 public class UpdateRobots {
 	
+	//constructor
+	public UpdateRobots(){
+	}
+	
 	public static void main(String[] args) throws Throwable {
 		ClassPool pool = ClassPool.getDefault();
 		
@@ -14,20 +18,9 @@ public class UpdateRobots {
 		
 		/**add missing fields*/
 		
-		/**
-		//field myslef
-		CtField my = new CtField(alr, "myself", alr);
-		my.setModifiers(Modifier.PROTECTED);
-		my.setModifiers(Modifier.STATIC);
-		alr.addField(my);
-		*/
-		
-		/** create class SteeringData */
-		SteeringDataJavassist stdj = new SteeringDataJavassist(pool, alr);
-		stdj.doAll();
-		
 		/** add missing methods */
 		
+<<<<<<< HEAD
 		//method getPositioningData
 		CtMethod gpd = CtNewMethod.make(
 				"public synchronized fr.upmc.dtgui.robot.PositioningData	getPositioningData() {\n" +
@@ -67,6 +60,8 @@ public class UpdateRobots {
 		//SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist(pool, alr);
 		//sdsj.doAll();		
 		
+=======
+>>>>>>> benoit
 		/** add missing fields */
 		
 		CtField fadr = new CtField(pool.get("ActuatorDataReceptor"), "adr", alr);

@@ -1,5 +1,8 @@
 package fr.upmc.dtgui.javassist;
 
+import java.lang.reflect.Modifier;
+import java.util.Hashtable;
+
 import javassist.*;
 import fr.upmc.dtgui.annotations.*;
 
@@ -12,70 +15,129 @@ public class MakePublicTranslator implements Translator {
 		
 		try {
 			CtClass cc=pool.get(className);
-			//cc.setModifiers(Modifier.PUBLIC);
-			
-			
+			System.out.println("ClassName: " + className);
+
+			//get all the annotations of a robot
 			Object[] all;
 			all = cc.getAnnotations();
-	
-			//if (all.length>0){
-				/*
-			TestAnnotation a = (TestAnnotation)all[0];
-			String name = a.nName();
-			System.out.println("name: " + name);*/
-			if (all.length!=0){
-				System.out.println("Length of array: " + all.length);
+			
+			//bool to check if there is a sensor when we are in the actuator
+			boolean bool = false;
+			
+			//get all the constructor of a robot
+			CtConstructor[] listCons = cc.getDeclaredConstructors();						
+			
+			if (all.length>0){
+				UpdateManager uman = new UpdateManager(pool, cc);
 				for (int i=0; i<all.length; i++){
 					
+					//SENSORS
 					if (all[i] instanceof WithSensors){
+						System.out.println("SENSORS");
+						
+						/** add the interface InstrumentedRobot to each robot */
+						cc.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
+					
+						/** add field myself to each robot */
+						CtField my = new CtField(cc, "myself", cc);
+						my.setModifiers(Modifier.PROTECTED);
+						my.setModifiers(Modifier.STATIC);
+						cc.addField(my);
+						
+						//modify main constructor
+						for (int j=0; j<listCons.length;j++){
+							listCons[j].insertAfter(
+									"{\n" +
+											className + ".myself = $0 ;\n" +
+									"}\n"
+									);
+						}						
+						
+						/** add class SensorDataSender (not entirely) */
 						SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist();
-						sdsj.doAll(pool, cc);
-						sdsj.updatePosition(pool, cc);
-						CtMethod run = pool.getMethod("SensorDataSender", "run");
-						System.out.println(run.toString());
+						sdsj.create(pool, cc);
 
-						System.out.println("ClassName: " + className);
+						/** read the methods annotations and update the robot */ 
 						CtMethod[] methods;
 						methods=cc.getMethods();
-						UpdateManager uman = new UpdateManager();
 						//System.out.println(all[i].getClass().getAnnotations().length);
 						Object[] alls;
 						for (int j=0; j<methods.length; j++){
 							alls=methods[j].getAnnotations();						
 							if (alls.length>0){
-								System.out.println(methods[j].getName());
 								for (int k=0; k<alls.length; k++){			
-									uman.update(alls[k],methods[j]);
+									uman.updateSensors(alls[k]);
 								}
 							}
-							
 						}
+						
+						/** complete class SensorDataSender */
+						sdsj.update(pool, cc, uman);
+						
+						//modify main constructor
+						for (int j=0; j<listCons.length;j++){
+							listCons[j].insertAfter(
+									"{" +
+										"$0.sds = new fr.upmc.dtgui.tests.SensorDataSender($0) ;" +
+									"}");
+						}
+						
+						//a sensor has been found
+						bool = true;
 					}
+					
+					//ACTUATORS
 					if (all[i] instanceof WithActuators){
-						System.out.println("ClassName: " + className);
-						System.out.println(all[i].toString());
+						System.out.println("ACTUATORS");
+						
+						//if no sensors have been found, all these fields must be created here (otherwise they already exist)
+						if (!bool){
+							/** add the interface InstrumentedRobot to each robot */
+							cc.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
+						
+							/** add field myself to each robot */
+							CtField my = new CtField(cc, "myself", cc);
+							my.setModifiers(Modifier.PROTECTED);
+							my.setModifiers(Modifier.STATIC);
+							cc.addField(my);
+							
+							//modify main constructor
+							for (int j=0; j<listCons.length;j++){
+								listCons[j].insertAfter(
+										"{\n" +
+												className + ".myself = $0 ;\n" +
+										"}\n"
+										);
+							}	
+						}
+						
+						/** add class ActuatorDataReceptor (not entirely) */
+						ActuatorDataReceptorJavassist adrj = new ActuatorDataReceptorJavassist();
+						adrj.create(pool, cc);						
+						
+						/** read the methods annotations and update the robot */ 
 						CtMethod[] methods;
 						methods=cc.getMethods();
-						System.out.println(cc.getMethods().length);
-						System.out.println(methods.length);
-						//System.out.println(all[i].getClass().getAnnotations().length);
 						Object[] alls;
 						for (int j=0; j<methods.length; j++){
 							alls=methods[j].getAnnotations();
-							
 							if (alls.length>0){
-								System.out.println(methods[j].getName());
 								for (int k=0; k<alls.length; k++){			
-									System.out.println(alls[k].toString());
+									uman.updateActuators(alls[k]);
 								}
 							}
-							
+						}
+						
+						//modify main constructor
+						for (int j=0; j<listCons.length;j++){
+							listCons[j].insertAfter(
+									"{" +
+											"$0.adr = new fr.upmc.dtgui.tests.ActuatorDataReceptor($0) ;" +
+									"}");
 						}
 					}
 				}
-				System.out.println("\n\n");
 			}
-			//}
 		} catch (ClassNotFoundException e) {
 			System.out.println("error");
 			e.printStackTrace();
