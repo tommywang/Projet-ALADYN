@@ -20,48 +20,6 @@ public class UpdateRobots {
 		
 		/** add missing methods */
 		
-<<<<<<< HEAD
-		//method getPositioningData
-		CtMethod gpd = CtNewMethod.make(
-				"public synchronized fr.upmc.dtgui.robot.PositioningData	getPositioningData() {\n" +
-					"return new fr.upmc.dtgui.robot.PositioningData(\n" +
-									"$0.getX(), $0.getY(), this.getDirection()) ;\n" +
-				"}",
-				alr);
-		alr.addMethod(gpd);		
-		
-		//method getSteeringData
-		CtMethod gsd = CtNewMethod.make(
-				"public synchronized SteeringData	getSteeringData() {\n" +
-					"return new SteeringData($0.getSteeringAngle()) ;\n" +
-				"}",
-				alr);
-		alr.addMethod(gsd);
-		
-		/** create class SteeringChange*/
-		SteeringChangeJavassist stcj = new SteeringChangeJavassist(pool, alr);
-		stcj.doAll();
-		
-		//method makeSteeringChange
-		CtMethod msc = CtNewMethod.make(
-				"public static fr.upmc.dtgui.robot.RobotActuatorCommand	makeSteeringChange(double newSteeringAngle)\n" +
-				//"public static void	makeSteeringChange(double newSteeringAngle)\n" +
-				"{\n" +
-					"return new SteeringChange($1);\n" +
-				"}",
-				alr);
-		alr.addMethod(msc);
-		
-		/** create class ActuatorDataReceptor*/
-		ActuatorDataReceptorJavassist adrj = new ActuatorDataReceptorJavassist(pool, alr);
-		adrj.doAll();
-		
-		/** create class SensorDataSender*/
-		//SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist(pool, alr);
-		//sdsj.doAll();		
-		
-=======
->>>>>>> benoit
 		/** add missing fields */
 		
 		CtField fadr = new CtField(pool.get("ActuatorDataReceptor"), "adr", alr);
