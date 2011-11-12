@@ -80,7 +80,7 @@ public class UpdateManager {
 				stdj.create(this.pool, this.robot);
 				
 				//add code in method run of SensorDataSender
-				this.body = "dataQueue.add(new fr.upmc.dtgui.tests.SteeringData(lr.steeringAngle)) ;\n";
+				this.body = "dataQueue.add(new " + this.robot.getName() + ".SteeringData(lr.steeringAngle)) ;\n";
 				this.setBody("SensorDataSender", "run", this.body);
 			}
 		}
@@ -102,7 +102,7 @@ public class UpdateManager {
 				mspc.setModifiers(Modifier.STATIC);
 				mspc.setBody(
 						"{\n" +
-								"return new fr.upmc.dtgui.tests.SpeedChange($1);\n" +
+								"return new " + this.robot.getName() + ".SpeedChange($1);\n" +
 						"}\n"
 						);
 				robot.addMethod(mspc);
@@ -121,16 +121,9 @@ public class UpdateManager {
 				mstc.setModifiers(Modifier.STATIC);
 				mstc.setBody(
 						"{\n" +
-								"return new fr.upmc.dtgui.tests.SteeringChange($1);\n" +
+								"return new " + this.robot.getName() + ".SteeringChange($1);\n" +
 						"}\n"
 						);
-				/*
-				CtMethod mstc = CtNewMethod.make(
-						"public fr.upmc.dtgui.robot.RobotActuatorCommand makeSteeringChange(double angle)" +
-						"{\n" +
-								"return new fr.upmc.dtgui.tests.SpeedChange($1);\n" +
-						"}\n", this.robot);
-						*/
 				robot.addMethod(mstc);
 				
 			}

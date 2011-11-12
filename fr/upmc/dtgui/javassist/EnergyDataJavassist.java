@@ -20,9 +20,8 @@ public class EnergyDataJavassist {
 		/** add class EnergyData */
 
 		//create class
-		CtClass ed = robot.makeNestedClass("fr.upmc.dtgui.tests.EnergyData", true);
-		ed.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotStateData"));
-		ed.setModifiers(~Modifier.STATIC);			
+		CtClass ed = robot.makeNestedClass("EnergyData", true);
+		ed.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotStateData"));			
 		
 		//add field level
 		CtField lvl = new CtField(CtClass.doubleType, "level", ed);
@@ -43,7 +42,7 @@ public class EnergyDataJavassist {
 		CtMethod ged = new CtMethod(ed,"getEnergyData",new CtClass[]{},robot);
 		ged.setBody(
 				"{\n" +
-						"return new fr.upmc.dtgui.tests.EnergyData($0.getEnergyLevel()) ;\n" +
+						"return new " + robot.getName() + ".EnergyData($0.getEnergyLevel()) ;\n" +
 				"}\n");
 		ged.setModifiers(Modifier.SYNCHRONIZED);
 		robot.addMethod(ged);

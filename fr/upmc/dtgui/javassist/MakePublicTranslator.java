@@ -25,6 +25,10 @@ public class MakePublicTranslator implements Translator {
 			CtClass cc=pool.get(className);
 			System.out.println("ClassName: " + className);
 			
+			if ((className=="fr.upmc.dtgui.tests.LittleRobot")||(className=="fr.upmc.dtgui.tests.AnotherLittleRobot")){
+				cc.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
+			}
+			
 			//get all the annotations of a robot
 			Object[] all;
 			all = cc.getAnnotations();
@@ -44,8 +48,8 @@ public class MakePublicTranslator implements Translator {
 						System.out.println("SENSORS");
 						
 						/** add the interface InstrumentedRobot to each robot */
-						cc.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
-					
+						//cc.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
+						
 						/** add field myself to each robot */
 						CtField my = new CtField(cc, "myself", cc);
 						my.setModifiers(Modifier.PROTECTED);
@@ -86,7 +90,7 @@ public class MakePublicTranslator implements Translator {
 						for (int j=0; j<listCons.length;j++){
 							listCons[j].insertAfter(
 									"{" +
-										"$0.sds = new fr.upmc.dtgui.tests.SensorDataSender($0) ;" +
+										"$0.sds = new "+ cc.getName() +".SensorDataSender($0) ;" +
 									"}");
 						}
 						
@@ -140,7 +144,7 @@ public class MakePublicTranslator implements Translator {
 						for (int j=0; j<listCons.length;j++){
 							listCons[j].insertAfter(
 									"{" +
-											"$0.adr = new fr.upmc.dtgui.tests.ActuatorDataReceptor($0) ;" +
+											"$0.adr = new " + cc.getName() + ".ActuatorDataReceptor($0) ;" +
 									"}");
 						}
 						bool = true;

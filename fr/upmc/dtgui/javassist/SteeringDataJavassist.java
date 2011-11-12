@@ -16,9 +16,8 @@ public class SteeringDataJavassist {
 		/** add class SteeringData */
 
 		//create class
-		CtClass std = robot.makeNestedClass("fr.upmc.dtgui.tests.SteeringData", true);
-		std.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotStateData"));
-		std.setModifiers(~Modifier.STATIC);		
+		CtClass std = robot.makeNestedClass("SteeringData", true);
+		std.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotStateData"));	
 		
 		//add field level
 		CtField sta = new CtField(CtClass.doubleType, "steeringAngle", std);
@@ -35,11 +34,11 @@ public class SteeringDataJavassist {
 		
 		/** add methods in the robot */
 		
-		//add method getEnergyData
+		//add method getSteeringData
 		CtMethod gstd = new CtMethod(std,"getSteeringData",new CtClass[]{}, robot);
 		gstd.setBody(
 				"{\n" +
-						"return new fr.upmc.dtgui.tests.SteeringData($0.getSteeringAngle()) ;\n" +
+						"return new " + robot.getName() + ".SteeringData($0.getSteeringAngle()) ;\n" +
 				"}\n");
 		gstd.setModifiers(Modifier.SYNCHRONIZED);
 		robot.addMethod(gstd);

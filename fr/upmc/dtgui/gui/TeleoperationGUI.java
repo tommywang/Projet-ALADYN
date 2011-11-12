@@ -275,41 +275,6 @@ public abstract class	TeleoperationGUI	extends JFrame
 	}
 
 	/**
-	 * create the teleoperation board fort the robot lr.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param lr	robot for which the teleoperation board must be created.
-	 * @return		the teleoperation board for the robot lr.
-	 */
-	public abstract RobotTeleoperationBoard	createBoard(InstrumentedRobot lr) ;
-
-	/**
-	 * create the sensor data receptor thread for the robot lr and connects it
-	 * to its teleoperation board.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param lr	the robot for which the thread must be created.
-	 * @param board	the teleoperation board of the robot lr.
-	 * @return
-	 */
-	public abstract SensorDataReceptorInterface createSensorDataReceptor(
-			InstrumentedRobot lr,
-			RobotTeleoperationBoard board
-			) ;
-
-	/**
 	 * makes a robot no longer visible from this teleoperation station when it
 	 * exits its visibility area.  The sensor data receptor thread for this
 	 * robot is deleted.
@@ -361,6 +326,41 @@ public abstract class	TeleoperationGUI	extends JFrame
 		}
 	}
 
+	/**
+	 * create the teleoperation board fort the robot lr.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param lr	robot for which the teleoperation board must be created.
+	 * @return		the teleoperation board for the robot lr.
+	 */
+	public abstract RobotTeleoperationBoard	createBoard(InstrumentedRobot lr) ;
+
+	/**
+	 * create the sensor data receptor thread for the robot lr and connects it
+	 * to its teleoperation board.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param lr	the robot for which the thread must be created.
+	 * @param board	the teleoperation board of the robot lr.
+	 * @return
+	 */
+	public abstract SensorDataReceptorInterface createSensorDataReceptor(
+			InstrumentedRobot lr,
+			RobotTeleoperationBoard board
+			) ;	
+	
 	/**
 	 * make a robot no longer controllable (but still visible) by this control
 	 * station when it exits its control area.  The button used to select this

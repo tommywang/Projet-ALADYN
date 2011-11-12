@@ -21,13 +21,13 @@ public class		WorldTests {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		MyWorld world = new MyWorld() ;
+		World world = new World() ;
 		try {
 			sem.acquire() ;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		world.start() ;
+		//world.start() ;
 	}
 }
 

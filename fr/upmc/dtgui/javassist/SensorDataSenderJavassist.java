@@ -22,9 +22,9 @@ public class SensorDataSenderJavassist {
 		/** class SensorDataSender */
 		
 		//class creation
-		CtClass sds = robot.makeNestedClass("fr.upmc.dtgui.tests.SensorDataSender", true);
+		CtClass sds = robot.makeNestedClass("SensorDataSender", true);
 		sds.setSuperclass(pool.get("java.lang.Thread"));
-		sds.setModifiers(~Modifier.STATIC);
+
 		
 		//field dataQueue
 		CtField dq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "dataQueue", sds);
@@ -47,12 +47,12 @@ public class SensorDataSenderJavassist {
 					"$0.dataQueue = new java.util.concurrent.ArrayBlockingQueue(4);\n" +
 				"}");
 		sds.addConstructor(cons_sds);
-		
+			
 		//method getDataQueue
 		CtMethod gdq = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getDataQueue", new CtClass[]{}, sds);
 		gdq.setBody(
 				"{\n" +
-				"return $0.dataQueue;\n" +
+						"return $0.dataQueue;\n" +
 				"}\n");
 		sds.addMethod(gdq);
 		
@@ -90,7 +90,7 @@ public class SensorDataSenderJavassist {
 	/** final update of the class SensorDataSender */
 	public void update(ClassPool pool, CtClass robot, UpdateManager uman) throws NotFoundException, CannotCompileException{
 		
-		CtClass sds = pool.getCtClass("fr.upmc.dtgui.tests.SensorDataSender");
+		CtClass sds = pool.getCtClass(robot.getName() + "$SensorDataSender");
 		
 		CtMethod run = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, sds);
 		run.setBody(

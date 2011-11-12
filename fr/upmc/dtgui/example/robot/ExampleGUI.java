@@ -11,7 +11,7 @@ import fr.upmc.dtgui.gui.SensorDataReceptorInterface;
 import fr.upmc.dtgui.gui.TeleoperationGUI;
 import fr.upmc.dtgui.robot.InstrumentedRobot;
 
-public class ExampleGUI extends TeleoperationGUI {
+public class ExampleGUI extends TeleoperationGUI{
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,6 +29,7 @@ public class ExampleGUI extends TeleoperationGUI {
 		super(panelName, absoluteX, absoluteY, relativeX, relativeY,
 												controlRadius, sizeX, sizeY);
 	}
+
 
 	public RobotTeleoperationBoard	createBoard(InstrumentedRobot lr) {
 		RobotTeleoperationBoard board = null ;
@@ -69,6 +70,21 @@ public class ExampleGUI extends TeleoperationGUI {
 			System.exit(1) ;
 		}
 		return sdr ;
+	}
+
+	@Override
+	public void	detectRobot(InstrumentedRobot lr) {
+		// if this robot was not already detected, then detect
+		RobotTeleoperationBoard board = null ;
+		SensorDataReceptorInterface sdr = null ;
+		if (!this.detected(lr)) {
+			board = this.createBoard(lr) ;
+			sdr = this.createSensorDataReceptor(lr, board) ;
+			this.sensors.put(lr, sdr) ;
+			this.boards.put(lr, board) ;
+			sdr.start() ;
+			this.validate() ;
+		}
 	}
 }
 

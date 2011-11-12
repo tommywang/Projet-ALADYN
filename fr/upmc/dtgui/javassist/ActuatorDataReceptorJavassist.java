@@ -12,9 +12,8 @@ public class ActuatorDataReceptorJavassist {
 	public void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
 
 		//create class
-		CtClass adr = robot.makeNestedClass("fr.upmc.dtgui.tests.ActuatorDataReceptor", true);
+		CtClass adr = robot.makeNestedClass("ActuatorDataReceptor", true);
 		adr.setSuperclass(pool.get("java.lang.Thread"));
-		adr.setModifiers(~Modifier.STATIC);	
 	
 		//field commandQueue
 		CtField cq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "commandQueue", adr);

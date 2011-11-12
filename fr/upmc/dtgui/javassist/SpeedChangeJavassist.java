@@ -12,9 +12,8 @@ public class SpeedChangeJavassist {
 	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 		
 		//class creation
-		CtClass spc = robot.makeNestedClass("fr.upmc.dtgui.tests.SpeedChange", true);
+		CtClass spc = robot.makeNestedClass("SpeedChange", true);
 		spc.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
-		spc.setModifiers(~Modifier.STATIC);
 		
 		//field speed
 		CtField sp = new CtField(CtClass.doubleType, "speed", spc);

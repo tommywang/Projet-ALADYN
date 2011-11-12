@@ -12,9 +12,8 @@ public class SteeringChangeJavassist {
 	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 
 		//create class
-		CtClass stc = robot.makeNestedClass("fr.upmc.dtgui.tests.SteeringChange", true);
-		stc.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
-		stc.setModifiers(~Modifier.STATIC);				
+		CtClass stc = robot.makeNestedClass("SteeringChange", true);
+		stc.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));				
 		
 		//field steeringAngle
 		CtField sta2 = new CtField(CtClass.doubleType, "steeringAngle", stc);
