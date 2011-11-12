@@ -10,7 +10,11 @@ public class ActuatorDataReceptorJavassist {
 	}
 	
 	public void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
-		CtClass adr = pool.makeClass("fr.upmc.dtgui.tests.ActuatorDataReceptor", pool.get("java.lang.Thread"));
+
+		//create class
+		CtClass adr = robot.makeNestedClass("fr.upmc.dtgui.tests.ActuatorDataReceptor", true);
+		adr.setSuperclass(pool.get("java.lang.Thread"));
+		adr.setModifiers(~Modifier.STATIC);	
 	
 		//field commandQueue
 		CtField cq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "commandQueue", adr);
@@ -69,6 +73,7 @@ public class ActuatorDataReceptorJavassist {
 			"}\n");
 		robot.addMethod(gadq);		
 		
+		adr.toClass();
 	}
 	
 	/** final update of the class SensorDataSender */

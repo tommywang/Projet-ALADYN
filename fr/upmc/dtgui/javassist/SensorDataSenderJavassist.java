@@ -22,7 +22,9 @@ public class SensorDataSenderJavassist {
 		/** class SensorDataSender */
 		
 		//class creation
-		CtClass sds = pool.makeClass("fr.upmc.dtgui.tests.SensorDataSender", pool.get("java.lang.Thread"));
+		CtClass sds = robot.makeNestedClass("fr.upmc.dtgui.tests.SensorDataSender", true);
+		sds.setSuperclass(pool.get("java.lang.Thread"));
+		sds.setModifiers(~Modifier.STATIC);
 		
 		//field dataQueue
 		CtField dq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "dataQueue", sds);
@@ -82,6 +84,7 @@ public class SensorDataSenderJavassist {
 					"return $0.sds.getDataQueue() ;\n" +
 			"}\n");
 		robot.addMethod(gsdq);
+		
 	}
 	
 	/** final update of the class SensorDataSender */
@@ -104,5 +107,7 @@ public class SensorDataSenderJavassist {
 					"}\n" +
 				"}\n");
 		sds.addMethod(run);
+		
+		sds.toClass();
 	}
 }

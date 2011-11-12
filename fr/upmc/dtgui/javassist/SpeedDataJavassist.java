@@ -20,7 +20,9 @@ public class SpeedDataJavassist {
 		/** add class SpeedData */
 
 		//create class
-		CtClass spd = pool.makeClass("fr.upmc.dtgui.tests.SpeedData", pool.get("fr.upmc.dtgui.robot.RobotStateData"));
+		CtClass spd = robot.makeNestedClass("fr.upmc.dtgui.tests.SpeedData", true);
+		spd.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotStateData"));
+		spd.setModifiers(~Modifier.STATIC);			
 		
 		//add field level
 		CtField sp = new CtField(CtClass.doubleType, "speed", spd);
@@ -44,6 +46,8 @@ public class SpeedDataJavassist {
 						"return new fr.upmc.dtgui.tests.SpeedData($0.getSpeed()) ;\n" +
 				"}\n");
 		gspd.setModifiers(Modifier.SYNCHRONIZED);
-		robot.addMethod(gspd);		
+		robot.addMethod(gspd);
+		
+		spd.toClass();
 	}
 }

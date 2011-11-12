@@ -1,5 +1,7 @@
 package fr.upmc.dtgui.javassist;
 
+import java.lang.reflect.Modifier;
+
 import javassist.*;
 
 public class SpeedChangeJavassist {
@@ -9,8 +11,10 @@ public class SpeedChangeJavassist {
 	
 	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 		
-		//create class
-		CtClass spc = pool.makeClass("fr.upmc.dtgui.tests.SpeedChange", pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
+		//class creation
+		CtClass spc = robot.makeNestedClass("fr.upmc.dtgui.tests.SpeedChange", true);
+		spc.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
+		spc.setModifiers(~Modifier.STATIC);
 		
 		//field speed
 		CtField sp = new CtField(CtClass.doubleType, "speed", spc);
@@ -33,5 +37,7 @@ public class SpeedChangeJavassist {
 				"}\n"
 				);
 		spc.addMethod(perf);
+		
+		spc.toClass();
 	}
 }

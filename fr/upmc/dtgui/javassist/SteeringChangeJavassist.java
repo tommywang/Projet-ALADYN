@@ -1,5 +1,7 @@
 package fr.upmc.dtgui.javassist;
 
+import java.lang.reflect.Modifier;
+
 import javassist.*;
 
 public class SteeringChangeJavassist {
@@ -8,9 +10,11 @@ public class SteeringChangeJavassist {
 	}
 	
 	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
-		
+
 		//create class
-		CtClass stc = pool.makeClass("fr.upmc.dtgui.tests.SteeringChange", pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
+		CtClass stc = robot.makeNestedClass("fr.upmc.dtgui.tests.SteeringChange", true);
+		stc.setSuperclass(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"));
+		stc.setModifiers(~Modifier.STATIC);				
 		
 		//field steeringAngle
 		CtField sta2 = new CtField(CtClass.doubleType, "steeringAngle", stc);
@@ -33,5 +37,7 @@ public class SteeringChangeJavassist {
 				"}\n"
 				);
 		stc.addMethod(perf);
+		
+		stc.toClass();
 	}
 }

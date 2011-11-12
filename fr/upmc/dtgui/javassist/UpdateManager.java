@@ -99,12 +99,12 @@ public class UpdateManager {
 				//add method makeSpeedChange in the robot
 				CtMethod mspc = new CtMethod(this.pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
 						"makeSpeedChange", new CtClass[]{CtClass.doubleType}, this.robot);
+				mspc.setModifiers(Modifier.STATIC);
 				mspc.setBody(
 						"{\n" +
 								"return new fr.upmc.dtgui.tests.SpeedChange($1);\n" +
 						"}\n"
 						);
-				mspc.setModifiers(Modifier.STATIC);
 				robot.addMethod(mspc);
 				
 			}
@@ -115,14 +115,22 @@ public class UpdateManager {
 				stcj.create(this.pool, this.robot);
 				
 				//add method makeSteeringChange in the robot
+				
 				CtMethod mstc = new CtMethod(this.pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
 						"makeSteeringChange", new CtClass[]{CtClass.doubleType}, this.robot);
+				mstc.setModifiers(Modifier.STATIC);
 				mstc.setBody(
 						"{\n" +
 								"return new fr.upmc.dtgui.tests.SteeringChange($1);\n" +
 						"}\n"
 						);
-				mstc.setModifiers(Modifier.STATIC);
+				/*
+				CtMethod mstc = CtNewMethod.make(
+						"public fr.upmc.dtgui.robot.RobotActuatorCommand makeSteeringChange(double angle)" +
+						"{\n" +
+								"return new fr.upmc.dtgui.tests.SpeedChange($1);\n" +
+						"}\n", this.robot);
+						*/
 				robot.addMethod(mstc);
 				
 			}

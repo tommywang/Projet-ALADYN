@@ -14,7 +14,7 @@ public class WorldTestsJavassist {
 		Loader cl = new Loader();
 		cl.addTranslator(pool, t);
 		//t.onLoad(pool, "fr.upmc.dtgui.example.WorldTests");
-		cl.run("fr.upmc.dtgui.example.WorldTests", args);
+		cl.run("fr.upmc.dtgui.main.WorldTests", args);
 		
 		/*
 		CtClass  nwt= pool.makeClass("WorldTests");

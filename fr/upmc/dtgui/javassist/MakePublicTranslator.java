@@ -1,14 +1,22 @@
 package fr.upmc.dtgui.javassist;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javassist.*;
 import fr.upmc.dtgui.annotations.*;
+import fr.upmc.dtgui.robot.*;
 
 
 public class MakePublicTranslator implements Translator {
 
+	ArrayList<String> listRobots;
+	
+	public MakePublicTranslator(){
+		listRobots = new ArrayList<String>();
+	}
+	
 	@Override
 	public void onLoad(ClassPool pool, String className) throws NotFoundException,
 			CannotCompileException {
@@ -16,7 +24,7 @@ public class MakePublicTranslator implements Translator {
 		try {
 			CtClass cc=pool.get(className);
 			System.out.println("ClassName: " + className);
-
+			
 			//get all the annotations of a robot
 			Object[] all;
 			all = cc.getAnnotations();
@@ -135,15 +143,23 @@ public class MakePublicTranslator implements Translator {
 											"$0.adr = new fr.upmc.dtgui.tests.ActuatorDataReceptor($0) ;" +
 									"}");
 						}
+						bool = true;
 					}
 				}
+				
+				//if this class represents a robot (ie has a sensor or an actuator)
+				if (bool){
+					cc.toClass();
+					listRobots.add(className);
+				}
 			}
+			
+			
+			
 		} catch (ClassNotFoundException e) {
 			System.out.println("error");
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 	@Override
