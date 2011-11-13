@@ -49,9 +49,9 @@ public class			World		extends Thread {
 		this.instrumentedRobots = new InstrumentedRobot[2] ;
 		this.teleoperationStations = new TeleoperationGUI[2] ;
 		this.instrumentedRobots[0] =
-			new LittleRobot("No 5", 2000.0, 950.0, 45.0) ;
+			(InstrumentedRobot) new LittleRobot("No 5", 2000.0, 950.0, 45.0) ;
 		this.instrumentedRobots[1] =
-			new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
+			(InstrumentedRobot) new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
 		this.teleoperationStations[0] =
 			new ExampleGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
 		this.teleoperationStations[1] =
