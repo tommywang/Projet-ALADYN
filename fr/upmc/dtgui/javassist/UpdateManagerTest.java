@@ -1,6 +1,5 @@
 package fr.upmc.dtgui.javassist;
 
-import static org.junit.Assert.*;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -10,23 +9,18 @@ import javassist.NotFoundException;
 import javassist.Translator;
 import junit.framework.TestCase;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import fr.upmc.dtgui.annotations.MeasurementUnit;
-import fr.upmc.dtgui.annotations.RealRange;
-import fr.upmc.dtgui.annotations.RealSensorData;
-import fr.upmc.dtgui.annotations.VariationType;
 import fr.upmc.dtgui.annotations.WithSensors;
 
 public class UpdateManagerTest extends TestCase{
 
 	@Override
 	public void setUp() throws Exception {
-		Translator t=new MakePublicTranslator();
+		//Translator t=new MakePublicTranslator();
 		pool = ClassPool.getDefault();
-		Loader cl = new Loader();
-		cl.addTranslator(pool, t);
+		//Loader cl = new Loader();
+		//cl.addTranslator(pool, t);
 		robot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
 		anotherRobot=pool.get("fr.upmc.dtgui.tests.AnotherLittleRobot");
 	}
@@ -37,12 +31,12 @@ public class UpdateManagerTest extends TestCase{
 	private boolean classFoundAnotherRobot=true;
 	@Test
 	public void testLittleRobot() throws ClassNotFoundException, CannotCompileException, RuntimeException, NotFoundException {
+		//pool.get("fr.upmc.dtgui.tests.LittleRobot$SpeedData");
 		UpdateManager um=new UpdateManager(pool, robot);
 		Object[] all;
 		all = robot.getAnnotations();
 		for (int i=0; i<all.length; i++){
 			if (all[i] instanceof WithSensors){
-
 				CtMethod[] methods;
 				methods=robot.getMethods();
 				//System.out.println(all[i].getClass().getAnnotations().length);
@@ -68,8 +62,7 @@ public class UpdateManagerTest extends TestCase{
 		//System.out.println(c.getName());
 		assertTrue(classFoundRobot);
 		//assertEquals(true, um.getBool());
-		
-	}
+}
 	
 	public void testAnotherLittleRobot() throws ClassNotFoundException, CannotCompileException, RuntimeException, NotFoundException {
 		UpdateManager um=new UpdateManager(pool, anotherRobot);

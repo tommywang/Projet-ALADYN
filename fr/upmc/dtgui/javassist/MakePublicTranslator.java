@@ -41,6 +41,7 @@ public class MakePublicTranslator implements Translator {
 			
 			if (all.length>0){
 				UpdateManager uman = new UpdateManager(pool, cc);
+				BoardManager bm=new BoardManager();
 				for (int i=0; i<all.length; i++){
 					
 					//SENSORS
@@ -79,6 +80,7 @@ public class MakePublicTranslator implements Translator {
 							if (alls.length>0){
 								for (int k=0; k<alls.length; k++){			
 									uman.updateSensors(alls[k]);
+									
 								}
 							}
 						}
@@ -136,6 +138,7 @@ public class MakePublicTranslator implements Translator {
 							if (alls.length>0){
 								for (int k=0; k<alls.length; k++){			
 									uman.updateActuators(alls[k]);
+									//bm.createNewboard(pool, "fr.upmc.dtgui.gui.newBoard", alls[k]);
 								}
 							}
 						}

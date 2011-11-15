@@ -4,6 +4,8 @@ import java.lang.reflect.Modifier;
 
 import javassist.*;
 
+/**
+ * The class <code>ActuatorDataReceptorJavassist<code>*/ 
 public class ActuatorDataReceptorJavassist {
 	
 	public ActuatorDataReceptorJavassist(){
