@@ -1,4 +1,4 @@
-//	World.java --- 
+/*//	World.java --- 
 
 package fr.upmc.dtgui.example;
 
@@ -10,7 +10,7 @@ import fr.upmc.dtgui.example.robot.ExampleGUI;
 import fr.upmc.dtgui.example.robot.LittleRobot;
 import fr.upmc.dtgui.example.robot.AnotherLittleRobot;
 
-/**
+*//**
  * The class <code>World</code> simulates a space within which robots move and
  * can be controlled by teleoperation station when they enter their control
  * area.
@@ -36,7 +36,7 @@ import fr.upmc.dtgui.example.robot.AnotherLittleRobot;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  * @version	$Name$ -- $Revision$ -- $Date$
- */
+ *//*
 public class			World		extends Thread {
 
 	public static int				MAX_X ;
@@ -172,4 +172,4 @@ public class			World		extends Thread {
 	}
 }
 
-// $Id$
+// $Id$*/

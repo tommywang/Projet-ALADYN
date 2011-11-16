@@ -1,14 +1,13 @@
-//	World.java --- 
-
 package fr.upmc.dtgui.main;
+//	World.java --- 
 
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import fr.upmc.dtgui.gui.TeleoperationGUI;
 import fr.upmc.dtgui.robot.InstrumentedRobot;
 import fr.upmc.dtgui.example.robot.ExampleGUI;
-import fr.upmc.dtgui.tests.LittleRobot;
-import fr.upmc.dtgui.tests.AnotherLittleRobot;
+import fr.upmc.dtgui.example.robot.LittleRobot;
+import fr.upmc.dtgui.example.robot.AnotherLittleRobot;
 
 /**
  * The class <code>World</code> simulates a space within which robots move and
@@ -49,9 +48,9 @@ public class			World		extends Thread {
 		this.instrumentedRobots = new InstrumentedRobot[2] ;
 		this.teleoperationStations = new TeleoperationGUI[2] ;
 		this.instrumentedRobots[0] =
-			(InstrumentedRobot) new LittleRobot("No 5", 2000.0, 950.0, 45.0) ;
+			new LittleRobot("No 5", 2000.0, 950.0, 45.0) ;
 		this.instrumentedRobots[1] =
-			(InstrumentedRobot) new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
+			new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
 		this.teleoperationStations[0] =
 			new ExampleGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
 		this.teleoperationStations[1] =

@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
+import fr.upmc.dtgui.example.robot.ExampleGUI;
 import fr.upmc.dtgui.gui.*;
 import fr.upmc.dtgui.tests.*;
 import fr.upmc.dtgui.robot.*;
@@ -53,9 +54,11 @@ public class MyWorld extends Thread {
 		this.instrumentedRobots[1] =
 			(InstrumentedRobot)new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
 		this.teleoperationStations[0] =
-			new PersonalizedGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
+			//new PersonalizedGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
+				new ExampleGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
 		this.teleoperationStations[1] =
-			new PersonalizedGUI("2", 3500, 1500, 500, 500, 400, 1000, 1000) ;
+			//new PersonalizedGUI("2", 3500, 1500, 500, 500, 400, 1000, 1000) ;
+				new ExampleGUI("2", 3500, 1500, 500, 500, 400, 1000, 1000) ;
 		final TeleoperationGUI[] ts = this.teleoperationStations ;
 		try {
 			SwingUtilities.invokeAndWait(
@@ -70,8 +73,7 @@ public class MyWorld extends Thread {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		}
-		
+		}	
 	}
 	
 	public void				start() {
@@ -87,7 +89,7 @@ public class MyWorld extends Thread {
 	public void				run() {
 		while (true) {
 			for (int i = 0 ; i < this.instrumentedRobots.length ; i++) {
-				int xRobot = (int) this.instrumentedRobots[i].getX() ;
+				int xRobot = (int) this.instrumentedRobots[i].getX() ;		//CtClass nwt = pool.get("fr.upmc.dtgui.example.WorldTests");
 				int yRobot = (int) this.instrumentedRobots[i].getY() ;
 				for (int j = 0 ; j < this.teleoperationStations.length ; j++) {
 					int xStation =

@@ -1,4 +1,4 @@
-package fr.upmc.dtgui.javassist;
+package fr.upmc.dtgui.javassist.robot;
 
 import java.lang.reflect.Modifier;
 

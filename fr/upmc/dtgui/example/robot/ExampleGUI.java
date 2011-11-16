@@ -86,6 +86,7 @@ public class ExampleGUI extends TeleoperationGUI{
 			this.validate() ;
 		}
 	}
+
 }
 
 // $Id$

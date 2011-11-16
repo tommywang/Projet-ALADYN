@@ -1,51 +1,49 @@
-package fr.upmc.dtgui.javassist;
+package fr.upmc.dtgui.junit;
+
+
+import org.junit.Test;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import javassist.Loader;
 import javassist.NotFoundException;
-import javassist.Translator;
 import junit.framework.TestCase;
-
-import org.junit.Test;
-
 import fr.upmc.dtgui.annotations.WithSensors;
+import fr.upmc.dtgui.javassist.robot.RobotManager;
 
-public class UpdateManagerTest extends TestCase{
+public class RobotManagerJunit extends TestCase{
 
 	@Override
 	public void setUp() throws Exception {
-		//Translator t=new MakePublicTranslator();
 		pool = ClassPool.getDefault();
-		//Loader cl = new Loader();
-		//cl.addTranslator(pool, t);
-		robot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		anotherRobot=pool.get("fr.upmc.dtgui.tests.AnotherLittleRobot");
+		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
+		anotherLittleRobot=pool.get("fr.upmc.dtgui.tests.AnotherLittleRobot");
 	}
-	private CtClass robot;
-	private CtClass anotherRobot;
+	
+	private CtClass littleRobot;
+	private CtClass anotherLittleRobot;
 	private ClassPool pool;
 	private boolean classFoundRobot=true;
 	private boolean classFoundAnotherRobot=true;
+	
 	@Test
 	public void testLittleRobot() throws ClassNotFoundException, CannotCompileException, RuntimeException, NotFoundException {
 		//pool.get("fr.upmc.dtgui.tests.LittleRobot$SpeedData");
-		UpdateManager um=new UpdateManager(pool, robot);
+		
+		RobotManager rman=new RobotManager();
 		Object[] all;
-		all = robot.getAnnotations();
+		all = littleRobot.getAnnotations();
 		for (int i=0; i<all.length; i++){
 			if (all[i] instanceof WithSensors){
 				CtMethod[] methods;
-				methods=robot.getMethods();
-				//System.out.println(all[i].getClass().getAnnotations().length);
+				methods=littleRobot.getMethods();
 				Object[] alls;
 				for (int j=0; j<methods.length; j++){
 					alls=methods[j].getAnnotations();						
 					if (alls.length>0){
 						for (int k=0; k<alls.length; k++){			
-							um.updateSensors(alls[k]);
+							rman.manageSensors(pool, littleRobot, alls[k]);
 						}
 					}
 				}
@@ -59,27 +57,26 @@ public class UpdateManagerTest extends TestCase{
 		catch(Exception e){
 			classFoundRobot=false;
 		}
-		//System.out.println(c.getName());
+		
 		assertTrue(classFoundRobot);
-		//assertEquals(true, um.getBool());
-}
+
+	}
 	
 	public void testAnotherLittleRobot() throws ClassNotFoundException, CannotCompileException, RuntimeException, NotFoundException {
-		UpdateManager um=new UpdateManager(pool, anotherRobot);
+		RobotManager rman=new RobotManager();
 		Object[] all;
-		all = anotherRobot.getAnnotations();
+		all = anotherLittleRobot.getAnnotations();
 		for (int i=0; i<all.length; i++){
 			if (all[i] instanceof WithSensors){
 
 				CtMethod[] methods;
-				methods=anotherRobot.getMethods();
-				//System.out.println(all[i].getClass().getAnnotations().length);
+				methods=anotherLittleRobot.getMethods();
 				Object[] alls;
 				for (int j=0; j<methods.length; j++){
 					alls=methods[j].getAnnotations();						
 					if (alls.length>0){
 						for (int k=0; k<alls.length; k++){			
-							um.updateSensors(alls[k]);
+							rman.manageSensors(pool, anotherLittleRobot, alls[k]);
 						}
 					}
 				}
@@ -92,9 +89,8 @@ public class UpdateManagerTest extends TestCase{
 		catch(Exception e){
 			classFoundAnotherRobot=false;
 		}
-		//System.out.println(c.getName());
+
 		assertTrue(classFoundAnotherRobot);
-		//assertEquals(true, um.getBool());
 		
 	}
 	

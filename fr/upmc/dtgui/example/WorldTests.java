@@ -1,4 +1,4 @@
-//	WorldtTests.java --- 
+/*//	WorldtTests.java --- 
 
 package fr.upmc.dtgui.example;
 
@@ -89,4 +89,4 @@ class StopButton extends JPanel implements ActionListener {
 		
 }
 
-// $Id$
+// $Id$*/

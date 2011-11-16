@@ -200,7 +200,7 @@ public class			LittleRobot		extends Thread
 	/** @return the speed											*/
 	@RealSensorData(
 		groupName = "speed", 
-		unit = @MeasurementUnit(name = "mps"),
+		unit = @MeasurementUnit(name = "m/s"),
 		dataRange = @RealRange(inf = 0.0, sup = 20.0),
 		maxReadingRate = 10.0,
 		minReadingRate = 0.0,
@@ -222,7 +222,7 @@ public class			LittleRobot		extends Thread
 	 */
 	@RealActuatorData(
 			groupName = "speed", 
-			unit = @MeasurementUnit(name = "mps"),
+			unit = @MeasurementUnit(name = "m/s"),
 			dataRange = @RealRange(inf = 0.0, sup = 20.0),
 			maxWritingRate = 10.0,
 			minWritingRate = 0.0
