@@ -4,6 +4,9 @@ fr.upmc.dtgui.example.gui
 fr.upmc.dtgui.example.robot
 fr.upmc.dtgui.gui
 fr.upmc.dtgui.javassist
+fr.upmc.dtgui.javassist.board
+fr.upmc.dtgui.javassist.robot
+fr.upmc.dtgui.junit
 fr.upmc.dtgui.main
 fr.upmc.dtgui.robot
 fr.upmc.dtgui.tests
