@@ -12,8 +12,7 @@ public class RobotEnergyTest extends TestCase {
 	public void setUp() throws Exception {
 		pool = ClassPool.getDefault();
 		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		EnergyDataJavassist ed=new EnergyDataJavassist();
-		ed.create(pool, littleRobot);
+		EnergyDataJavassist.create(pool, littleRobot);
 	}
 
 	private CtClass littleRobot;

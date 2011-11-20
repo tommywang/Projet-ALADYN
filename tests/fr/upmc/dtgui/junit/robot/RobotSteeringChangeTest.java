@@ -13,8 +13,7 @@ public class RobotSteeringChangeTest extends TestCase {
 		public void setUp() throws Exception {
 			pool = ClassPool.getDefault();
 			littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-			SteeringChangeJavassist scj=new SteeringChangeJavassist();
-			scj.create(pool, littleRobot);
+			SteeringChangeJavassist.create(pool, littleRobot);
 		}
 
 		private CtClass littleRobot;

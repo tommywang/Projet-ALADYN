@@ -12,8 +12,7 @@ public class RobotActuatorDataReceptorTest extends TestCase {
 	public void setUp() throws Exception {
 		pool = ClassPool.getDefault();
 		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		ActuatorDataReceptorJavassist adr=new ActuatorDataReceptorJavassist();
-		adr.create(pool, littleRobot);
+		ActuatorDataReceptorJavassist.create(pool, littleRobot);
 	}
 
 	private CtClass littleRobot;

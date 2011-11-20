@@ -12,8 +12,7 @@ public class RobotSpeedChangeTest extends TestCase {
 	public void setUp() throws Exception {
 		pool = ClassPool.getDefault();
 		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		SpeedChangeJavassist spc=new SpeedChangeJavassist();
-		spc.create(pool, littleRobot);
+		SpeedChangeJavassist.create(pool, littleRobot);
 	}
 
 	private CtClass littleRobot;

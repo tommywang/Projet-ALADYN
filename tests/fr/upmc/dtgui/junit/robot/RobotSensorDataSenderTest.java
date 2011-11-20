@@ -12,8 +12,7 @@ public class RobotSensorDataSenderTest extends TestCase {
 	public void setUp() throws Exception {
 		pool = ClassPool.getDefault();
 		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		SensorDataSenderJavassist sds=new SensorDataSenderJavassist();
-		sds.create(pool, littleRobot);
+		SensorDataSenderJavassist.create(pool, littleRobot);
 	}
 
 	private CtClass littleRobot;
