@@ -2,6 +2,10 @@ package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
 
+import fr.upmc.dtgui.annotations.BooleanActuatorData;
+import fr.upmc.dtgui.annotations.IntegerActuatorData;
+import fr.upmc.dtgui.annotations.RealActuatorData;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -28,11 +32,11 @@ public class SpeedDisplayPanelJavassist {
 	 * create the nested class SpeedDisplayPanel
 	 * @param pool
 	 * @param board
-	 * @param ann
+	 * @param annotation
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass board, Object ann) throws CannotCompileException, NotFoundException{	
+	public void create(ClassPool pool, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
 		
 		/**
 		 * create class SpeedDisplayPanel
@@ -68,13 +72,30 @@ public class SpeedDisplayPanelJavassist {
 		slpp.setModifiers(Modifier.PROTECTED);
 		sdp.addField(slpp);
 
+		/*code to add in the constructor depending on the annotation type*/
+		String body1 = "", body2 = "";
+		if (annotation instanceof RealActuatorData){
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+			body1 = annotationRealActuatorData.dataRange().inf() + "," + annotationRealActuatorData.dataRange().sup();
+			body2 = annotationRealActuatorData.unit().name();
+		}
+		if (annotation instanceof IntegerActuatorData){
+			IntegerActuatorData annotationIntegerActuatorData = (IntegerActuatorData)annotation;
+			body1 = annotationIntegerActuatorData.dataRange().inf() + "," + annotationIntegerActuatorData.dataRange().sup();
+			body2 = annotationIntegerActuatorData.unit().name();
+		}
+		if (annotation instanceof BooleanActuatorData){
+			body1 = "0 , 1";
+			body2 = "  ";
+		}		
+		
 		CtConstructor cons_sdp = new CtConstructor(new CtClass[]{}, sdp);
 		cons_sdp.setBody(
 				"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 125) ;" +
 						"jpProgressBar = new javax.swing.JPanel() ;" +
 						"jpProgressBar.setLayout(new java.awt.FlowLayout()) ;" +
-						"$0.speedModel = new javax.swing.DefaultBoundedRangeModel(0, 0, 0, 20) ;" +
+						"$0.speedModel = new javax.swing.DefaultBoundedRangeModel(0, 0, "+ body1 +") ;" +
 						"javax.swing.JSlider speedSlider = new javax.swing.JSlider(speedModel) ;" +
 						"speedSlider.setMajorTickSpacing(5);" +
 						"speedSlider.setMinorTickSpacing(1);" +
@@ -82,7 +103,7 @@ public class SpeedDisplayPanelJavassist {
 						"speedSlider.setPaintLabels(true);" +
 						"jpProgressBar.add(speedSlider) ;" +
 						"$0.add(jpProgressBar, java.awt.BorderLayout.NORTH) ;" +
-						"javax.swing.JLabel speedLabel = new javax.swing.JLabel(\"Current speed (m/s)\") ;" +
+						"javax.swing.JLabel speedLabel = new javax.swing.JLabel(\"Current speed ("+ body2 +")\") ;" +
 						"speedLabelPanel = new javax.swing.JPanel() ;" +
 						"speedLabelPanel.add(speedLabel) ;" +
 						"$0.add(speedLabelPanel, java.awt.BorderLayout.SOUTH) ;" +

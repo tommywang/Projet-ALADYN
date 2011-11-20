@@ -29,7 +29,7 @@ public class SteeringActuatorDataListenerJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{		
+	public void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{		
 	
 		/**
 		 * create class SteeringActuatorDataListener
@@ -63,9 +63,9 @@ public class SteeringActuatorDataListenerJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void update(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{
+	public void update(ClassPool pool, CtClass robot, CtClass board) throws CannotCompileException, NotFoundException{
 		
-		CtClass stadl = pool.get(robot.getName()+"$SteeringActuatorDataListener");
+		CtClass stadl = pool.get(board.getName()+"$SteeringActuatorDataListener");
 		
 		CtMethod stc = new CtMethod(CtClass.voidType,"stateChanged",new CtClass[]{pool.get("javax.swing.event.ChangeEvent")},stadl);
 		stc.setBody(
@@ -73,7 +73,7 @@ public class SteeringActuatorDataListenerJavassist {
 						"javax.swing.JSlider source = (javax.swing.JSlider)$1.getSource() ;" +
 						"double newSteeringAngle = source.getValue() ;" +
 						"final fr.upmc.dtgui.robot.RobotActuatorCommand sc =" +
-						robot.getName() + ".makeSteeringChange(newSteeringAngle) ;" +
+						robot.getName() + "$makeSteeringChange(newSteeringAngle) ;" +
 						"(new " + board.getName() + "$ActuatorDataSender(sc, $0.commandQueue)).start() ;" +
 				"}");
 		stadl.addMethod(stc);

@@ -53,10 +53,11 @@ public class BoardManager {
 
 		/* create field serialVersionUID */
 		CtField svUID = new CtField(CtClass.longType, "serialVersionUID", board);
-		svUID.setModifiers(Modifier.PRIVATE |Modifier.STATIC |Modifier.FINAL);
+		svUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
 		board.addField(svUID,CtField.Initializer.constant(1L));
-	}
 
+	}
+	
 	/**
 	 * 
 	 * @param pool
@@ -66,15 +67,233 @@ public class BoardManager {
 	 * @throws RuntimeException
 	 * @throws NotFoundException
 	 */
-	public void manageActuatorsNext(ClassPool pool, CtClass robot, Object ann) 
+	public void manageActuatorsDisplayController(ClassPool pool, CtClass currentRobot, Object annotation) 
 			throws CannotCompileException, RuntimeException, NotFoundException{
 
-		CtClass board = pool.get(robot.getName()+"TeleoperationBoard");
+		CtClass board = pool.get(currentRobot.getName()+"TeleoperationBoard");
 
 		/* annotation RealActuatorData */
-		if (ann instanceof RealActuatorData){
+		if (annotation instanceof RealActuatorData){
 			
-			RealActuatorData annot = (RealActuatorData)ann;
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationRealActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationRealActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationRealActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationRealActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationRealActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationRealActuatorData);				
+							
+			}
+			
+		}
+		
+		/* annotation RealActuatorData */
+		if (annotation instanceof IntegerActuatorData){
+			
+			IntegerActuatorData annotationIntegerActuatorData = (IntegerActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationIntegerActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationIntegerActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationIntegerActuatorData);			
+							
+			}
+			
+		}
+		
+		/* annotation RealActuatorData */
+		if (annotation instanceof BooleanActuatorData){
+			
+			BooleanActuatorData annotationBooleanActuatorData = (BooleanActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationBooleanActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationBooleanActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationBooleanActuatorData);				
+							
+			}			
+		}			
+	}
+
+	public void manageActuatorsPanel(ClassPool pool, CtClass currentRobot, Object annotation) throws NotFoundException, CannotCompileException{
+		
+		CtClass board = pool.get(currentRobot.getName()+"TeleoperationBoard");
+
+		/* annotation RealActuatorData */
+		if (annotation instanceof RealActuatorData){
+			
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationRealActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationRealActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationRealActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationRealActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationRealActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationRealActuatorData);				
+							
+			}
+			
+		}
+		
+		/* annotation RealActuatorData */
+		if (annotation instanceof IntegerActuatorData){
+			
+			IntegerActuatorData annotationIntegerActuatorData = (IntegerActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationIntegerActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationIntegerActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationIntegerActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationIntegerActuatorData);			
+							
+			}
+			
+		}
+		
+		/* annotation RealActuatorData */
+		if (annotation instanceof BooleanActuatorData){
+			
+			BooleanActuatorData annotationBooleanActuatorData = (BooleanActuatorData)annotation;
+
+			/* annotation field groupName = speed */
+			if (annotationBooleanActuatorData.groupName().equals("speed")){
+				
+				SpeedActuatorDataListenerJavassist speedActuatorDataListenerJavassist = new SpeedActuatorDataListenerJavassist();
+				speedActuatorDataListenerJavassist.create(pool, board);
+				
+				SpeedDisplayPanelJavassist speedDisplayPanelJavassist = new SpeedDisplayPanelJavassist();
+				speedDisplayPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+				
+				SpeedControllerPanelJavassist speedControllerPanelJavassist = new SpeedControllerPanelJavassist();
+				speedControllerPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+
+			}
+
+			/* annotation field groupName = steering */
+			if (annotationBooleanActuatorData.groupName().equals("steering")){
+				
+				SteeringActuatorDataListenerJavassist steeringActuatorDataListenerJavassist = new SteeringActuatorDataListenerJavassist();
+				steeringActuatorDataListenerJavassist.create(pool, board);
+				
+				SteeringDisplayPanelJavassist steeringDisplayPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringDisplayPanelJavassist.create(pool, board, annotationBooleanActuatorData);
+				
+				SteeringDisplayPanelJavassist steeringControllerPanelJavassist = new SteeringDisplayPanelJavassist();
+				steeringControllerPanelJavassist.create(pool, board, annotationBooleanActuatorData);				
+							
+			}			
+		}
+		
+	}
+	
+	public void manageFinal(ClassPool pool, CtClass currentRobot, Object annotation) throws NotFoundException, CannotCompileException{
+
+		CtClass board = pool.get(currentRobot.getName()+"TeleoperationBoard");
+
+		if (annotation instanceof RealActuatorData){
+
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
 			
 			/* add method makeSensorDataReceptor */
 			CtClass[] args_msdr = new CtClass[]{
@@ -84,7 +303,6 @@ public class BoardManager {
 					CtClass.intType,
 					CtClass.intType
 			};					
-
 			CtMethod msdr = new CtMethod(pool.get("fr.upmc.dtgui.gui.SensorDataReceptorInterface"),"makeSensorDataReceptor", args_msdr, board);
 			msdr.setBody(
 					"{" +
@@ -93,63 +311,13 @@ public class BoardManager {
 					"}");
 			board.addMethod(msdr);
 
-			if (annot.groupName().equals("speed")){
-				
-				
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-				
-				
-				
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-		
-				
-
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-			}
-
-			/* annotation field steering */
-			if (annot.groupName().equals("steering")){
-				
-				
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-				
-
-				
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-				
-				
-				
-				/*--------------------------------------------------------------------------------------------------------------------------------------*/
-				
+			if (annotationRealActuatorData.groupName().equals("energy")){
 				
 			}
 			
-			if (annot.groupName().equals("energy")){
+			if (annotationRealActuatorData.groupName().equals("speed")){
 				
-			}
-		}
-	}				
-
-	public void manageFinal(ClassPool pool, CtClass robot, Object ann) throws NotFoundException, CannotCompileException{
-
-		CtClass board = pool.get(robot.getName()+"TeleoperationBoard");
-
-		if (ann instanceof RealSensorData){
-
-			RealSensorData annot = (RealSensorData)ann;
-
-			if (annot.groupName().equals("energy")){
-				
-			}
-			if (annot.groupName().equals("speed")){
-				
-			}
-
-			if (annot.groupName().equals("steering")){
-
-			}				
+			}			
 
 		}
 	}
