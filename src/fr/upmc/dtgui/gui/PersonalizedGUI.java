@@ -1,10 +1,6 @@
 package fr.upmc.dtgui.gui;
 
 import java.awt.HeadlessException;
-import java.lang.reflect.InvocationTargetException;
-
-import javassist.CtConstructor;
-
 import fr.upmc.dtgui.robot.InstrumentedRobot;
 
 public class PersonalizedGUI extends TeleoperationGUI {

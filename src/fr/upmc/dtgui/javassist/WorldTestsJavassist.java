@@ -1,7 +1,5 @@
 package fr.upmc.dtgui.javassist;
 
-import java.util.Hashtable;
-
 import javassist.*;
 
 public class WorldTestsJavassist {

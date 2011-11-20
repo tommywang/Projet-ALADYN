@@ -1,9 +1,6 @@
 package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
-
-import fr.upmc.dtgui.annotations.RealActuatorData;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;

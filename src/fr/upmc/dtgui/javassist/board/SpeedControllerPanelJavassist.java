@@ -5,8 +5,6 @@ import java.lang.reflect.Modifier;
 import fr.upmc.dtgui.annotations.BooleanActuatorData;
 import fr.upmc.dtgui.annotations.IntegerActuatorData;
 import fr.upmc.dtgui.annotations.RealActuatorData;
-import fr.upmc.dtgui.annotations.RealSensorData;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;

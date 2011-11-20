@@ -1,7 +1,5 @@
 package fr.upmc.dtgui.javassist.robot;
 
-import java.lang.reflect.Modifier;
-
 import javassist.*;
 
 public class SteeringChangeJavassist {

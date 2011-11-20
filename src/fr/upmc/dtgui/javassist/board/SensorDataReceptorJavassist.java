@@ -1,15 +1,6 @@
 package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
-import org.junit.runners.BlockJUnit4ClassRunner;
-
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
-import fr.upmc.dtgui.robot.RobotStateData;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
