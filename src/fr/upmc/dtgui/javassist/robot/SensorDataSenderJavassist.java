@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.concurrent.BlockingQueue;
 
-import fr.upmc.dtgui.example.robot.LittleRobot.SteeringData;
 import fr.upmc.dtgui.robot.RobotStateData;
 
 import javassist.*;

@@ -3,10 +3,7 @@
 package fr.upmc.dtgui.main;
 
 import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.SwingUtilities;
-
-import fr.upmc.dtgui.example.robot.ExampleGUI;
 import fr.upmc.dtgui.gui.*;
 import fr.upmc.dtgui.tests.*;
 import fr.upmc.dtgui.robot.*;
