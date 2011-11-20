@@ -9,7 +9,7 @@ public class SpeedChangeJavassist {
 	public SpeedChangeJavassist(){
 	}
 	
-	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
+	public static void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 		
 		//class creation
 		CtClass spc = robot.makeNestedClass("SpeedChange", true);

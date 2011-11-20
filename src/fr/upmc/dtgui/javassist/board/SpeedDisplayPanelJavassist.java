@@ -110,17 +110,6 @@ public class SpeedDisplayPanelJavassist {
 				"}");
 		speedDisplayPanel.addMethod(updateSpeed);
 
-	}
-	
-	/**
-	 * update the class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 */
-	public void update(ClassPool pool, CtClass board, Object ann) throws CannotCompileException, NotFoundException{	
-		
+		speedDisplayPanel.toClass();
 	}
 }

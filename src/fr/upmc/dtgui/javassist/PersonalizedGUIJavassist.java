@@ -12,11 +12,9 @@ public class PersonalizedGUIJavassist {
 	}
 	
 	/** initial creation of the class EnergyData and associated elements in the robot */
-	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
+	public static void update(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 		
 		CtClass pgui = pool.get("fr.upmc.dtgui.gui.PersonalizedGUI");
-		
-		/** complete methods */
 		
 		//method createBoard
 		CtMethod cb = pool.getMethod("fr.upmc.dtgui.gui.PersonalizedGUI", "createBoard");
@@ -33,13 +31,12 @@ public class PersonalizedGUIJavassist {
 				"{\n" +
 					"fr.upmc.dtgui.gui.SensorDataReceptorInterface sdr = null ;\n" +
 					"sdr = $2.makeSensorDataReceptor(" +
-						"$0.positionDisplay, $1.getSensorDataQueue()," +
-						"$0.absoluteX, this.absoluteY, this.controlRadius" +
+							"$0.positionDisplay, (" + robot.getName() + ")$1.getSensorDataQueue()," +
+							"$0.absoluteX, this.absoluteY, this.controlRadius" +
 						") ;\n" +
 					"return sdr ;\n" +						
 				"}\n");						
 
-		/**
 		//method detectRobot
 		CtMethod dr = new CtMethod(CtClass.voidType, "detectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")}, pgui);
 		dr.setBody(
@@ -56,7 +53,6 @@ public class PersonalizedGUIJavassist {
 					"}\n" +	
 				"}\n");
 		pgui.addMethod(dr);
-		*/
 	}
 	
 }

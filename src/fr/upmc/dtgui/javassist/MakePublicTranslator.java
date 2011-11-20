@@ -72,8 +72,7 @@ public class MakePublicTranslator implements Translator {
 						}
 						
 						/*create the class SensorDataSender*/
-						SensorDataSenderJavassist sensorDataSenderJavassist = new SensorDataSenderJavassist();
-						sensorDataSenderJavassist.create(pool, currentClass);
+						SensorDataSenderJavassist.create(pool, currentClass);
 
 						/*read annotations on the methods and update the robot*/
 						CtMethod[] methods;
@@ -92,7 +91,7 @@ public class MakePublicTranslator implements Translator {
 						robotManager.manageSensorsFinal(pool, currentClass, listConstructors);
 						
 						/*complete the class SensorDataSender*/
-						sensorDataSenderJavassist.update(pool, currentClass, robotManager);
+						SensorDataSenderJavassist.update(pool, currentClass, robotManager);
 						
 						/*a sensor has been found*/
 						hasAlreadySensorOrActuator = true;
@@ -111,15 +110,11 @@ public class MakePublicTranslator implements Translator {
 							robotManager.manageInitial(pool, currentClass, listConstructors);
 						}
 						
-
 						/* create class ActuatorDataReceptor */
-						ActuatorDataReceptorJavassist adrj = new ActuatorDataReceptorJavassist();
-						adrj.create(pool, currentClass);						
-						
+						ActuatorDataReceptorJavassist.create(pool, currentClass);											
 
 						/* read annotations on the methods and update the robot */
-						CtMethod[] methods;
-						methods=currentClass.getMethods();
+						CtMethod[] methods = currentClass.getMethods();
 						Object[] methodAnnotations;
 						for (CtMethod method : methods){
 							methodAnnotations=method.getAnnotations();
@@ -127,16 +122,23 @@ public class MakePublicTranslator implements Translator {
 								for (Object methodAnnotation : methodAnnotations){			
 									robotManager.manageActuators(pool, currentClass, methodAnnotation);
 									boardManager.manageActuatorsDataListenerDisplayController(pool, currentClass, methodAnnotation);
+									boardManager.manageActuatorsPanel(pool, currentClass, methodAnnotation);
 								}
 							}
 						}
 						
 
-						/* final management of the sensors of the robot */				
-						robotManager.manageSensorsFinal(pool, currentClass, listConstructors);
+						/* final management of the actuators of the robot */				
+						robotManager.manageActuatorsFinal(pool, currentClass, listConstructors);
 						
-						/*complete the class SensorDataSender*/
-						adrj.update(pool, currentClass);
+						/* final management of the actuators of the board */	
+						boardManager.manageFinal(pool, currentClass, classAnnotation);
+						
+						/* when the teleoperation board is created, the gui is updated */
+						PersonalizedGUIJavassist.update(pool, currentClass);
+						
+						/*complete the class ActuatorDataReceptor*/
+						ActuatorDataReceptorJavassist.update(pool, currentClass);
 						
 						/*an actuator has been found*/
 						hasAlreadySensorOrActuator = true;

@@ -25,7 +25,7 @@ public class ActuatorDataReceptorJavassist {
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	public void create(ClassPool pool, CtClass currentRobot) throws RuntimeException, NotFoundException, CannotCompileException{
+	public static void create(ClassPool pool, CtClass currentRobot) throws RuntimeException, NotFoundException, CannotCompileException{
 		
 		/* create nested class ActuatorDataReceptor */
 		CtClass actuatorDataReceptor = currentRobot.makeNestedClass("ActuatorDataReceptor", true);
@@ -98,7 +98,7 @@ public class ActuatorDataReceptorJavassist {
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	public void update(ClassPool pool, CtClass robot) throws NotFoundException, CannotCompileException{
+	public static void update(ClassPool pool, CtClass robot) throws NotFoundException, CannotCompileException{
 		
 		CtClass actuatorDataReceptor = pool.getCtClass(robot.getName() + "$ActuatorDataReceptor");
 		

@@ -27,7 +27,7 @@ public class RobotManager {
 
 		/* add field myself */
 		CtField my = new CtField(robot, "myself", robot);
-		my.setModifiers(Modifier.PROTECTED | Modifier.STATIC | Modifier.PUBLIC);
+		my.setModifiers(Modifier.PROTECTED | Modifier.STATIC);
 		robot.addField(my);
 
 		/* modify main constructor */
@@ -79,8 +79,7 @@ public class RobotManager {
 			if (annotationRealSensorData.groupName().equals("energy")){
 
 				/* create class EnergyData */
-				EnergyDataJavassist edj = new EnergyDataJavassist();
-				edj.create(pool, robot);
+				EnergyDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
@@ -89,8 +88,7 @@ public class RobotManager {
 			if (annotationRealSensorData.groupName().equals("speed")){
 
 				/* create class SpeedData */
-				SpeedDataJavassist spdj = new SpeedDataJavassist();
-				spdj.create(pool, robot);
+				SpeedDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
@@ -99,8 +97,7 @@ public class RobotManager {
 			if (annotationRealSensorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringDataJavassist stdj = new SteeringDataJavassist();
-				stdj.create(pool, robot);
+				SteeringDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
@@ -136,8 +133,7 @@ public class RobotManager {
 			if (annotationIntegerSensorData.groupName().equals("energy")){
 
 				/* create class EnergyData */
-				EnergyDataJavassist edj = new EnergyDataJavassist();
-				edj.create(pool, robot);
+				EnergyDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
@@ -146,8 +142,7 @@ public class RobotManager {
 			if (annotationIntegerSensorData.groupName().equals("speed")){
 
 				/* create class SpeedData */
-				SpeedDataJavassist spdj = new SpeedDataJavassist();
-				spdj.create(pool, robot);
+				SpeedDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
@@ -156,8 +151,7 @@ public class RobotManager {
 			if (annotationIntegerSensorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringDataJavassist stdj = new SteeringDataJavassist();
-				stdj.create(pool, robot);
+				SteeringDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
@@ -197,8 +191,7 @@ public class RobotManager {
 			if (annotationBooleanSensorData.groupName().equals("energy")){
 
 				/* create class EnergyData */
-				EnergyDataJavassist edj = new EnergyDataJavassist();
-				edj.create(pool, robot);
+				EnergyDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
@@ -207,8 +200,7 @@ public class RobotManager {
 			if (annotationBooleanSensorData.groupName().equals("speed")){
 
 				/* create class SpeedData */
-				SpeedDataJavassist spdj = new SpeedDataJavassist();
-				spdj.create(pool, robot);
+				SpeedDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
@@ -217,8 +209,7 @@ public class RobotManager {
 			if (annotationBooleanSensorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringDataJavassist stdj = new SteeringDataJavassist();
-				stdj.create(pool, robot);
+				SteeringDataJavassist.create(pool, robot);
 
 				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
@@ -264,8 +255,7 @@ public class RobotManager {
 			if (annotationRealActuatorData.groupName().equals("speed")){
 
 				/* create class SpeedChange */
-				SpeedChangeJavassist spcj = new SpeedChangeJavassist();
-				spcj.create(pool, robot);
+				SpeedChangeJavassist.create(pool, robot);
 
 				/* add method makeSpeedChange in the robot*/
 				CtMethod mspc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
@@ -284,8 +274,7 @@ public class RobotManager {
 			if (annotationRealActuatorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringChangeJavassist stcj = new SteeringChangeJavassist();
-				stcj.create(pool, robot);
+				SteeringChangeJavassist.create(pool, robot);
 
 				/*add method makeSteeringChange in the robot*/
 				CtMethod mstc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
@@ -309,8 +298,7 @@ public class RobotManager {
 			if (annotationIntegerActuatorData.groupName().equals("speed")){
 
 				/* create class SpeedChange */
-				SpeedChangeJavassist spcj = new SpeedChangeJavassist();
-				spcj.create(pool, robot);
+				SpeedChangeJavassist.create(pool, robot);
 
 				/* add method makeSpeedChange in the robot*/
 				CtMethod mspc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
@@ -329,8 +317,7 @@ public class RobotManager {
 			if (annotationIntegerActuatorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringChangeJavassist stcj = new SteeringChangeJavassist();
-				stcj.create(pool, robot);
+				SteeringChangeJavassist.create(pool, robot);
 
 				/*add method makeSteeringChange in the robot*/
 				CtMethod mstc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
@@ -354,8 +341,7 @@ public class RobotManager {
 			if (annotationBooleanActuatorData.groupName().equals("speed")){
 
 				/* create class SpeedChange */
-				SpeedChangeJavassist spcj = new SpeedChangeJavassist();
-				spcj.create(pool, robot);
+				SpeedChangeJavassist.create(pool, robot);
 
 				/* add method makeSpeedChange in the robot*/
 				CtMethod mspc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
@@ -374,8 +360,7 @@ public class RobotManager {
 			if (annotationBooleanActuatorData.groupName().equals("steering")){
 
 				/* create class SteeringData */
-				SteeringChangeJavassist stcj = new SteeringChangeJavassist();
-				stcj.create(pool, robot);
+				SteeringChangeJavassist.create(pool, robot);
 
 				/*add method makeSteeringChange in the robot*/
 				CtMethod mstc = new CtMethod(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"),
