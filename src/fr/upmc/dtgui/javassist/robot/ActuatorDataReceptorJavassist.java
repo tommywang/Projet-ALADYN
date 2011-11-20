@@ -73,7 +73,7 @@ public class ActuatorDataReceptorJavassist {
 				"}");
 		actuatorDataReceptor.addMethod(start);
 		
-		/**class of the robot*/
+		/*class of the robot*/
 		
 		//add field adr
 		CtField adr = new CtField(actuatorDataReceptor, "adr", currentRobot);
@@ -88,6 +88,10 @@ public class ActuatorDataReceptorJavassist {
 					"return $0.adr.getCommandQueue() ;\n" +
 			"}\n");
 		currentRobot.addMethod(getActuatorDataQueue);
+		
+		/* update method start */
+		CtMethod startRobot = currentRobot.getDeclaredMethod("start");
+		startRobot.insertBefore("this.adr.start();");
 		
 	}
 	
@@ -109,8 +113,8 @@ public class ActuatorDataReceptorJavassist {
 					"fr.upmc.dtgui.robot.RobotActuatorCommand rac = null ;\n" +
 					"while (true) {\n" +
 						"try {\n" +
-							"rac = $0.commandQueue.take() ;\n" +
-							"rac.performOn($0.lr) ;\n" +
+							"rac = (fr.upmc.dtgui.robot.RobotActuatorCommand)$0.commandQueue.take() ;\n" +
+							"rac.performOn((fr.upmc.dtgui.robot.InstrumentedRobot)$0.lr) ;\n" +
 						"} catch (java.lang.InterruptedException e) {\n" +
 							"e.printStackTrace();\n" +
 						"}\n" +

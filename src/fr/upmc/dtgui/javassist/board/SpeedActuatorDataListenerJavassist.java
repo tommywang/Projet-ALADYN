@@ -29,7 +29,7 @@ public class SpeedActuatorDataListenerJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public static void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{	
+	public static void create(ClassPool pool, CtClass currentRobot, CtClass board) throws CannotCompileException, NotFoundException{	
 		
 		/**
 		 * create class SpeedActuatorDataListener
@@ -54,31 +54,18 @@ public class SpeedActuatorDataListenerJavassist {
 						"$0.commandQueue = $1;"	+
 				"}");
 		spadl.addConstructor(cons_spadl);
-
-	}
-	
-	/**
-	 * update the nested class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 */
-	public void update(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{		
-		
-		CtClass spadl = pool.get(board.getName()+"$SpeedActuatorDataListener");
 		
 		/* method stateChanged*/
-		CtMethod stc_spadl = new CtMethod(CtClass.voidType,"stateChanged",new CtClass[]{pool.get("javax.swing.event.ChangeEvent")},spadl);
-		stc_spadl.setBody(
+		CtMethod stateChanged = new CtMethod(CtClass.voidType,"stateChanged",new CtClass[]{pool.get("javax.swing.event.ChangeEvent")},spadl);
+		stateChanged.setBody(
 				"{" +
 						"javax.swing.JSlider source = (javax.swing.JSlider)$1.getSource() ;" +
 						"double newSpeed = source.getValue() ;" +
 						"final fr.upmc.dtgui.robot.RobotActuatorCommand sc =" +
-						robot.getName() + ".makeSpeedChange(newSpeed) ;" +
+						currentRobot.getName() + ".makeSpeedChange(newSpeed) ;" +
 						"(new " + board.getName() + "$ActuatorDataSender(sc, $0.commandQueue)).start() ;" +
 				"}");
-		spadl.addMethod(stc_spadl);
+		spadl.addMethod(stateChanged);
+
 	}
 }

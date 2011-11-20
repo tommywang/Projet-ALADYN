@@ -1,8 +1,14 @@
 package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
+
+import fr.upmc.dtgui.robot.RobotStateData;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -145,14 +151,20 @@ public class SensorDataReceptorJavassist {
 		
 		CtField pd = new CtField(pool.get("fr.upmc.dtgui.robot.PositioningData"),"pd", runnable1);
 		pd.setModifiers(Modifier.FINAL);
-		runnable1.addField(pd);		
+		runnable1.addField(pd);	
+		
+		/*add field positionDisplay */
+		CtField positionDisplay = new CtField(pool.get("fr.upmc.dtgui.gui.PositionDisplay"),"positionDisplay", runnable1);
+		positionDisplay.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		runnable1.addField(positionDisplay);	
 		
 		/* add constructor */
 		
-		CtConstructor constructorRunnable1 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.PositioningData")},runnable1);
+		CtConstructor constructorRunnable1 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.PositioningData"), pool.get("fr.upmc.dtgui.gui.PositionDisplay")},runnable1);
 		constructorRunnable1.setBody(
 				"{" +
 						"$0.pd = $1;" +
+						"$0.positionDisplay = $2;" +
 				"}");
 		runnable1.addConstructor(constructorRunnable1);
 		
@@ -160,7 +172,7 @@ public class SensorDataReceptorJavassist {
 		CtMethod runMyRunnable1 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable1);
 		runMyRunnable1.setBody(
 				"{" +
-						sensorDataReceptor.getName()+".positionDisplay.draw($0.pd) ;" +
+						"$0.positionDisplay.draw($0.pd) ;" +
 				"}");
 		runnable1.addMethod(runMyRunnable1);
 		runnable1.toClass();
@@ -193,8 +205,8 @@ public class SensorDataReceptorJavassist {
 		CtMethod runMyRunnable2 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable2);
 		runMyRunnable2.setBody(
 				"{" +
-						"if ("+sensorDataReceptor.getName()+".tBoard != null) {" +
-							sensorDataReceptor.getName()+".tBoard.processSensorData(rsd1) ;" +
+						"if ($0.tBoard != null) {" +
+							"$0.tBoard.processSensorData(rsd1) ;" +
 						"}" +
 				"}");
 		runnable2.addMethod(runMyRunnable2);
@@ -207,10 +219,12 @@ public class SensorDataReceptorJavassist {
 						"java.util.Vector current = new java.util.Vector(4) ;" +
 						"while ($0.shouldContinue) {" +
 							"try {" +
-								"rsd = $0.dataQueue.take() ;" +
+								//"System.out.println($0.dataQueue.size());" +
+								"rsd = (fr.upmc.dtgui.robot.RobotStateData)($0.dataQueue.take()) ;" +
 							"} catch (InterruptedException e) {" +
 								"e.printStackTrace();" +
 							"}" +
+							//"System.out.println(\"HELLO WORLD\");" +
 							"current.add(rsd) ;" +
 							"int n = $0.dataQueue.drainTo(current) ;" +
 							"for (int i = 0 ; i <= n ; i++) {" +
@@ -218,7 +232,7 @@ public class SensorDataReceptorJavassist {
 								"try {" +
 									"if (rsd instanceof fr.upmc.dtgui.robot.PositioningData) {" +
 										"final fr.upmc.dtgui.robot.PositioningData pd = (fr.upmc.dtgui.robot.PositioningData) rsd ;" +
-										runnable1.getName()+" runnable1 = new MyRunnable1(pd);"+
+										runnable1.getName()+" runnable1 = new MyRunnable1(pd, $0.positionDisplay);"+
 										"javax.swing.SwingUtilities.invokeAndWait(runnable1) ;" +
 									"} " +
 									"else {" +

@@ -54,20 +54,33 @@ public class ActuatorDataSenderJavassist {
 		/*class MyRunnable */
 		
 		CtClass runnable = actuatorDataSender.makeNestedClass("MyRunnable", true);
-		runnable.addInterface(pool.get("java.lang.Runnable"));			
+		runnable.addInterface(pool.get("java.lang.Runnable"));
 		
-		CtConstructor constructorRunnable = new CtConstructor(new CtClass[]{},runnable);
-		constructorRunnable.setBody("{}");
+		/* add field rac */
+		CtField racMyRunnable = new CtField(pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand"), "rac", runnable);
+		racMyRunnable.setModifiers(Modifier.PROTECTED);
+		runnable.addField(racMyRunnable);
+
+		/* add field commandQueue */
+		CtField commandQueueMyRunnable = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "commandQueue", runnable);
+		commandQueueMyRunnable.setModifiers(Modifier.PROTECTED);
+		runnable.addField(commandQueueMyRunnable);
+		
+		
+		CtConstructor constructorRunnable = new CtConstructor(new CtClass[]{pool.get("java.util.concurrent.BlockingQueue"), pool.get("fr.upmc.dtgui.robot.RobotActuatorCommand")},runnable);
+		constructorRunnable.setBody(
+				"{" +
+						"$0.commandQueue = $1;" +
+						"$0.rac = $2;"+
+				"}");
 		runnable.addConstructor(constructorRunnable);
 		
-		
-		System.out.println();
-		
+		/* add method run */
 		CtMethod bodyRun = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable);
 		bodyRun.setBody(
 				"{" +
-						actuatorDataSender.getName() + ".commandQueue.clear() ;" +
-						actuatorDataSender.getName() + ".commandQueue.add(" + actuatorDataSender.getName() + ".rac) ; " +
+						"$0.commandQueue.clear() ;" +
+						"$0.commandQueue.add($0.rac) ; " +
 				"}");
 		runnable.addMethod(bodyRun);
 
@@ -76,7 +89,7 @@ public class ActuatorDataSenderJavassist {
 		run.setBody(
 				"{" +
 					"try {" +
-						actuatorDataSender.getName() + "$MyRunnable runnable = new " + actuatorDataSender.getName() + "$MyRunnable();"+
+						actuatorDataSender.getName() + "$MyRunnable runnable = new " + actuatorDataSender.getName() + "$MyRunnable($0.commandQueue, $0.rac);"+
 						"javax.swing.SwingUtilities.invokeAndWait(runnable) ;" +
 					"} catch (java.lang.InterruptedException e1) {" +
 						"e1.printStackTrace();" +

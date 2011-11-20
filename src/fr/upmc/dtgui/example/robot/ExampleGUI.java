@@ -33,19 +33,19 @@ public class ExampleGUI extends TeleoperationGUI{
 
 	public RobotTeleoperationBoard	createBoard(InstrumentedRobot lr) {
 		RobotTeleoperationBoard board = null ;
-		if (lr instanceof LittleRobot) {
+//		if (lr instanceof LittleRobot) {
 			board =
 				new LittleRobotTeleoperationBoard(this, this.sizeX - 50) ;
-		} else if (lr instanceof AnotherLittleRobot) {
-			board =
-				new AnotherLittleRobotTeleoperationBoard(
-												this, this.sizeX - 50) ;
-		} else {
-			// TODO: create an exception type
-			System.out.println("Unknown type of robot : " +
-									lr.getClass().getCanonicalName()) ;
-			System.exit(1) ;
-		}
+//		} else if (lr instanceof AnotherLittleRobot) {
+//			board =
+//				new AnotherLittleRobotTeleoperationBoard(
+//												this, this.sizeX - 50) ;
+//		} else {
+//			// TODO: create an exception type
+//			System.out.println("Unknown type of robot : " +
+//									lr.getClass().getCanonicalName()) ;
+//			System.exit(1) ;
+//		}
 		return board ;
 	}
 
@@ -55,20 +55,20 @@ public class ExampleGUI extends TeleoperationGUI{
 		)
 	{
 		SensorDataReceptorInterface sdr = null ;
-		if (lr instanceof LittleRobot) {
+//		if (lr instanceof LittleRobot) {
 			sdr = board.makeSensorDataReceptor(
 						this.positionDisplay, lr.getSensorDataQueue(),
 						this.absoluteX, this.absoluteY, this.controlRadius) ;
-		} else if (lr instanceof AnotherLittleRobot) {
-			sdr = board.makeSensorDataReceptor(
-						this.positionDisplay, lr.getSensorDataQueue(),
-						this.absoluteX, this.absoluteY, this.controlRadius) ;
-		} else {
-			// TODO: create an exception type
-			System.out.println("Unknown type of robot : " +
-											lr.getClass().getCanonicalName()) ;
-			System.exit(1) ;
-		}
+//		} else if (lr instanceof AnotherLittleRobot) {
+//			sdr = board.makeSensorDataReceptor(
+//						this.positionDisplay, lr.getSensorDataQueue(),
+//						this.absoluteX, this.absoluteY, this.controlRadius) ;
+//		} else {
+//			// TODO: create an exception type
+//			System.out.println("Unknown type of robot : " +
+//											lr.getClass().getCanonicalName()) ;
+//			System.exit(1) ;
+//		}
 		return sdr ;
 	}
 

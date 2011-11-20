@@ -31,8 +31,8 @@ public class PersonalizedGUIJavassist {
 				"{\n" +
 						"fr.upmc.dtgui.gui.SensorDataReceptorInterface sdr = null ;\n" +
 						"sdr = $2.makeSensorDataReceptor(" +
-						"$0.positionDisplay, (" + robot.getName() + ")$1.getSensorDataQueue()," +
-						"$0.absoluteX, this.absoluteY, this.controlRadius" +
+							"$0.positionDisplay, $1.getSensorDataQueue()," +
+							"$0.absoluteX, $0.absoluteY, $0.controlRadius" +
 						") ;\n" +
 						"return sdr ;\n" +						
 				"}\n");						
@@ -44,12 +44,12 @@ public class PersonalizedGUIJavassist {
 						"fr.upmc.dtgui.gui.RobotTeleoperationBoard board = null ;\n" +
 						"fr.upmc.dtgui.gui.SensorDataReceptorInterface sdr = null ;\n" +
 						"if (!this.detected($1)) {\n" +
-						"board = $0.createBoard($1) ;\n" +
-						"sdr = $0.createSensorDataReceptor($1, board) ;\n" +
-						"$0.sensors.put($1, sdr) ;\n" +
-						"$0.boards.put($1, board) ;\n" +
-						"sdr.start() ;\n" +
-						"this.validate() ;\n" +
+							"board = $0.createBoard($1) ;\n" +
+							"sdr = $0.createSensorDataReceptor($1, board) ;\n" +
+							"$0.sensors.put($1, sdr) ;\n" +
+							"$0.boards.put($1, board) ;\n" +
+							"sdr.start() ;\n" +
+							"this.validate() ;\n" +
 						"}\n" +	
 				"}\n");
 		pgui.addMethod(dr);

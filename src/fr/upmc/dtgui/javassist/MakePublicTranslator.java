@@ -1,5 +1,7 @@
 package fr.upmc.dtgui.javassist;
 
+import java.lang.reflect.Modifier;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -145,6 +147,13 @@ public class MakePublicTranslator implements Translator {
 						
 					}
 				}
+				System.out.println("fin du onload");
+				System.out.println(listConstructors.length);
+				for (CtConstructor constructor : listConstructors){
+					constructor.setModifiers(Modifier.PUBLIC);
+				}
+				currentClass.setModifiers(Modifier.PUBLIC);
+				currentClass.toClass();
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

@@ -31,88 +31,75 @@ public class SensorDataSenderJavassist {
 	 */
 	public static void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
 		
-		/*class SensorDataSender*/
+		/* create class SensorDataSender*/
+		CtClass sensorDataSender = robot.makeNestedClass("SensorDataSender", true);
+		sensorDataSender.setSuperclass(pool.get("java.lang.Thread"));
 		
-		/**
-		 * create class SensorDataSender
-		 */
-		CtClass sds = robot.makeNestedClass("SensorDataSender", true);
-		sds.setSuperclass(pool.get("java.lang.Thread"));
+		/* add field dataQueue */
+		CtField dataQueue = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "dataQueue", sensorDataSender);
+		dataQueue.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		sensorDataSender.addField(dataQueue);
 		
-		/**
-		 * add field dataQueue
-		 */
-		CtField dq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "dataQueue", sds);
-		dq.setModifiers(Modifier.FINAL);
-		dq.setModifiers(Modifier.PROTECTED);
-		sds.addField(dq);
+		/* add field lr */
+		CtField lr = new CtField(robot, "lr", sensorDataSender);
+		lr.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		sensorDataSender.addField(lr);
 		
-		/**
-		 * add field lr
-		 */
-		CtField lr = new CtField(robot, "lr", sds);
-		lr.setModifiers(Modifier.FINAL);
-		lr.setModifiers(Modifier.PROTECTED);
-		sds.addField(lr);
-		
-		/**
-		 * add constructor
-		 */
-		CtConstructor cons_sds = new CtConstructor(new CtClass[]{robot}, sds);
-		cons_sds.setBody(
+		/* add constructor */
+		CtConstructor constructorSensorDataSender = new CtConstructor(new CtClass[]{robot}, sensorDataSender);
+		constructorSensorDataSender.setModifiers(Modifier.PUBLIC);
+		constructorSensorDataSender.setBody(
 				"{\n" +
 					"super();\n" +
 					"$0.lr = $1;\n" +
 					"$0.dataQueue = new java.util.concurrent.ArrayBlockingQueue(4);\n" +
 				"}");
-		sds.addConstructor(cons_sds);
+		sensorDataSender.addConstructor(constructorSensorDataSender);
 			
 		/**
 		 * add method getDataQueue
 		 * @return the field dataQueue
 		 */
-		CtMethod gdq = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getDataQueue", new CtClass[]{}, sds);
-		gdq.setBody(
+		CtMethod getDataQueue = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getDataQueue", new CtClass[]{}, sensorDataSender);
+		getDataQueue.setModifiers(Modifier.PUBLIC);
+		getDataQueue.setBody(
 				"{\n" +
 						"return $0.dataQueue;\n" +
 				"}\n");
-		sds.addMethod(gdq);
+		sensorDataSender.addMethod(getDataQueue);
 		
 		//method run
 		//this method will be implemented later (need missing elements at this point)
 		
-		/**
-		 * add method start
-		 */
-		CtMethod start = new CtMethod(CtClass.voidType, "start", new CtClass[]{}, sds);
+		/* add method start */
+		CtMethod start = new CtMethod(CtClass.voidType, "start", new CtClass[]{}, sensorDataSender);
+		start.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
 		start.setBody(
 				"{\n" +
 					"$0.dataQueue.clear() ;\n" +
 					"super.start();\n" +					
 				"}\n");
-		start.setModifiers(Modifier.SYNCHRONIZED);
-		sds.addMethod(start);
+		sensorDataSender.addMethod(start);
 		
 		/*class of the robot*/
 		
-		/**
-		 * add field sds
-		 */
-		CtField fsds = new CtField(sds, "sds", robot);
-		fsds.setModifiers(Modifier.PROTECTED);
-		fsds.setModifiers(Modifier.FINAL);
-		robot.addField(fsds);
+		/* add field sds */
+		CtField sds = new CtField(sensorDataSender, "sds", robot);
+		sds.setModifiers(Modifier.PROTECTED | Modifier.FINAL);
+		robot.addField(sds);
 		
-		/**
-		 * add method gsdq
-		 * @return the field dataQueue of sds
-		 */
-		CtMethod gsdq = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getSensorDataQueue", new CtClass[]{}, robot);
-		gsdq.setBody(
+		/* add method gsdq */
+		CtMethod getSensorDataQueue = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getSensorDataQueue", new CtClass[]{}, robot);
+		getSensorDataQueue.setModifiers(Modifier.PUBLIC);
+		getSensorDataQueue.setBody(
 			"{\n" +	
 					"return $0.sds.getDataQueue() ;\n" +
 			"}\n");
-		robot.addMethod(gsdq);
+		robot.addMethod(getSensorDataQueue);
+		
+		/* update method start */
+		CtMethod startRobot = robot.getDeclaredMethod("start");
+		startRobot.insertBefore("this.sds.start();");
 		
 	}
 	
@@ -126,17 +113,19 @@ public class SensorDataSenderJavassist {
 	 */
 	public static void update(ClassPool pool, CtClass robot, RobotManager rman) throws NotFoundException, CannotCompileException{
 		
-		/**
-		 * get class SensorDataSender
-		 */
+		/* get class SensorDataSender */
 		CtClass sds = pool.getCtClass(robot.getName() + "$SensorDataSender");
 		
+		/* add method run */
 		CtMethod run = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, sds);
 		run.setBody(
 				"{\n" +
 					"while (true) {\n" +
 						"$0.dataQueue.clear() ;\n" + 
+						
+						/*test*/
 						rman.getSensorDataSenderRunBody() +
+						
 						"try {\n" +
 							"java.lang.Thread.sleep((long)100);\n" +
 						"}\n" +

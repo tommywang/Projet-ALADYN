@@ -20,23 +20,22 @@ public class RobotManager {
 		this.sensorDataServerRunBody = "";
 	}
 
-	public void manageInitial(ClassPool pool, CtClass robot, CtConstructor[] listCons) throws CannotCompileException, NotFoundException{
+	public void manageInitial(ClassPool pool, CtClass robot, CtConstructor[] listConstructors) throws CannotCompileException, NotFoundException{
 
 		/* add interface InstrumentedRobot */
 		robot.addInterface(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"));
 
 		/* add field myself */
-		CtField my = new CtField(robot, "myself", robot);
-		my.setModifiers(Modifier.PROTECTED | Modifier.STATIC);
-		robot.addField(my);
+		CtField myself = new CtField(robot, "myself", robot);
+		myself.setModifiers(Modifier.PROTECTED | Modifier.STATIC);
+		robot.addField(myself);
 
 		/* modify main constructor */
-		for (int j=0; j<listCons.length;j++){
-			listCons[j].insertAfter(
+		for (int j=0; j<listConstructors.length;j++){
+			listConstructors[j].insertAfter(
 					"{\n" +
 							robot.getName() + ".myself = $0 ;\n" +
-							"}\n"
-					);
+					"}\n");
 		}						
 	}
 

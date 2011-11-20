@@ -100,7 +100,7 @@ public class BoardManager {
 			/* annotation field groupName = speed */
 			if (annotationRealActuatorData.groupName().equals("speed")){
 				
-				SpeedActuatorDataListenerJavassist.create(pool, board);
+				SpeedActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SpeedDisplayPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
 				
@@ -111,7 +111,7 @@ public class BoardManager {
 			/* annotation field groupName = steering */
 			if (annotationRealActuatorData.groupName().equals("steering")){
 				
-				SteeringActuatorDataListenerJavassist.create(pool, board);
+				SteeringActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SteeringDisplayPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
 				
@@ -129,7 +129,7 @@ public class BoardManager {
 			/* annotation field groupName = speed */
 			if (annotationIntegerActuatorData.groupName().equals("speed")){
 				
-				SpeedActuatorDataListenerJavassist.create(pool, board);
+				SpeedActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SpeedDisplayPanelJavassist.create(pool, currentRobot, board, annotationIntegerActuatorData);
 				
@@ -140,7 +140,7 @@ public class BoardManager {
 			/* annotation field groupName = steering */
 			if (annotationIntegerActuatorData.groupName().equals("steering")){
 				
-				SteeringActuatorDataListenerJavassist.create(pool, board);
+				SteeringActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SteeringDisplayPanelJavassist.create(pool, currentRobot, board, annotationIntegerActuatorData);
 				
@@ -158,7 +158,7 @@ public class BoardManager {
 			/* annotation field groupName = speed */
 			if (annotationBooleanActuatorData.groupName().equals("speed")){
 
-				SpeedActuatorDataListenerJavassist.create(pool, board);
+				SpeedActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SpeedDisplayPanelJavassist.create(pool, currentRobot, board, annotationBooleanActuatorData);
 				
@@ -169,7 +169,7 @@ public class BoardManager {
 			/* annotation field groupName = steering */
 			if (annotationBooleanActuatorData.groupName().equals("steering")){
 				
-				SteeringActuatorDataListenerJavassist.create(pool, board);
+				SteeringActuatorDataListenerJavassist.create(pool, currentRobot, board);
 				
 				SteeringDisplayPanelJavassist.create(pool, currentRobot, board, annotationBooleanActuatorData);
 				

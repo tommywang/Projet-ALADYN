@@ -50,15 +50,13 @@ public class MyWorld extends Thread {
 		this.instrumentedRobots = new InstrumentedRobot[2] ;
 		this.teleoperationStations = new TeleoperationGUI[2] ;
 		this.instrumentedRobots[0] =
-			(InstrumentedRobot)new LittleRobot("No 5", 2000.0, 950.0, 45.0) ;
+			(InstrumentedRobot)new LittleRobot("No 5", 1000.0, 1100.0, 45.0) ;
 		this.instrumentedRobots[1] =
-			(InstrumentedRobot)new AnotherLittleRobot("No 1", 2850.0, 950.0, 135.0, 10.0) ;
+				(InstrumentedRobot)new LittleRobot("No 1", 1000.0, 1100.0, 45.0) ;
 		this.teleoperationStations[0] =
-			//new PersonalizedGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
-				new ExampleGUI("1", 2500, 1500, 500, 500, 400, 1000, 1000) ;
+			new PersonalizedGUI("1", 1200, 1500, 350, 350, 250, 700, 700) ;
 		this.teleoperationStations[1] =
-			//new PersonalizedGUI("2", 3500, 1500, 500, 500, 400, 1000, 1000) ;
-				new ExampleGUI("2", 3500, 1500, 500, 500, 400, 1000, 1000) ;
+			new PersonalizedGUI("2", 1900, 1500, 350, 350, 250, 700, 700) ;
 		final TeleoperationGUI[] ts = this.teleoperationStations ;
 		try {
 			SwingUtilities.invokeAndWait(
@@ -68,7 +66,7 @@ public class MyWorld extends Thread {
 								ts[i].setVisible(true) ;
 							}
 						}
-					}) ;
+					});
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
@@ -88,8 +86,9 @@ public class MyWorld extends Thread {
 
 	public void				run() {
 		while (true) {
+			System.out.println(this.instrumentedRobots[0].getX() + " , " + this.instrumentedRobots[0].getY());
 			for (int i = 0 ; i < this.instrumentedRobots.length ; i++) {
-				int xRobot = (int) this.instrumentedRobots[i].getX() ;		//CtClass nwt = pool.get("fr.upmc.dtgui.example.WorldTests");
+				int xRobot = (int) this.instrumentedRobots[i].getX() ;	
 				int yRobot = (int) this.instrumentedRobots[i].getY() ;
 				for (int j = 0 ; j < this.teleoperationStations.length ; j++) {
 					int xStation =

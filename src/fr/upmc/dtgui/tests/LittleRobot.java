@@ -93,7 +93,7 @@ public class			LittleRobot		extends Thread
 	/** Position of the robot along the ordinate axis, in meters.		*/
 	protected double	y = 100.0 ;							// m
 	/** Current speed in m/s, >= 0.0 and <= 20.0.						*/
-	protected double	speed = 2.0 ;						// m/s
+	protected double	speed = 20.0 ;						// m/s
 	/** Current energy level as a percentage of remaining energy.		*/
 	protected double	energyLevel = 100.0 ;				// percentage
 	/**
@@ -110,7 +110,7 @@ public class			LittleRobot		extends Thread
 	 * positive angles mean a left turn on the screen, while negative ones
 	 * mean a right turn.
 	 */
-	protected double	steeringAngle = 5.0 ;				// degrees
+	protected double	steeringAngle = 0.0 ;				// degrees
 
 	/** Simulation time step in milliseconds */
 	protected int		timeStep = 100 ;
