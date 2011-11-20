@@ -36,47 +36,38 @@ public class SpeedDisplayPanelJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
+	public static void create(ClassPool pool, CtClass currentRobot, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
 		
-		/**
-		 * create class SpeedDisplayPanel
-		 */
-		CtClass sdp=board.makeNestedClass("SpeedDisplayPanel", true);
-		sdp.setSuperclass(pool.get("javax.swing.JPanel"));
+		/* create class SpeedDisplayPanel */
+		CtClass speedDisplayPanel=board.makeNestedClass("SpeedDisplayPanel", true);
+		speedDisplayPanel.setSuperclass(pool.get("javax.swing.JPanel"));
 
-		/**
-		 * @serialField serialVersionUID
-		 */
-		CtField svUID = new CtField(CtClass.longType, "serialVersionUID", sdp);
-		svUID.setModifiers(Modifier.PRIVATE |Modifier.STATIC |Modifier.FINAL);
-		sdp.addField(svUID,CtField.Initializer.constant(1L));
+		/* add field serialVersionUID */
+		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", speedDisplayPanel);
+		serialVersionUID.setModifiers(Modifier.PRIVATE |Modifier.STATIC |Modifier.FINAL);
+		speedDisplayPanel.addField(serialVersionUID,CtField.Initializer.constant(1L));
 
-		/**
-		 * add field speedModel
-		 */
-		CtField sm = new CtField(pool.get("javax.swing.BoundedRangeModel"),"speedModel", sdp);
-		sm.setModifiers(Modifier.PROTECTED);
-		sdp.addField(sm);
+		/* add field speedModel */
+		CtField speedModel = new CtField(pool.get("javax.swing.BoundedRangeModel"),"speedModel", speedDisplayPanel);
+		speedModel.setModifiers(Modifier.PROTECTED);
+		speedDisplayPanel.addField(speedModel);
 
-		/**
-		 * add field jpProgressBar
-		 */
-		CtField jpb = new CtField(pool.get("javax.swing.JPanel"),"jpProgressBar", sdp);
-		jpb.setModifiers(Modifier.PROTECTED);
-		sdp.addField(jpb);
+		/* add field jpProgressBar */
+		CtField jpProgressBar = new CtField(pool.get("javax.swing.JPanel"),"jpProgressBar", speedDisplayPanel);
+		jpProgressBar.setModifiers(Modifier.PROTECTED);
+		speedDisplayPanel.addField(jpProgressBar);
 
-		/**
-		 * add field speedLabelPanel
-		 */
-		CtField slpp = new CtField(pool.get("javax.swing.JPanel"),"speedLabelPanel", sdp);
-		slpp.setModifiers(Modifier.PROTECTED);
-		sdp.addField(slpp);
+		/* add field speedLabelPanel */
+		CtField speedLabelPanel = new CtField(pool.get("javax.swing.JPanel"),"speedLabelPanel", speedDisplayPanel);
+		speedLabelPanel.setModifiers(Modifier.PROTECTED);
+		speedDisplayPanel.addField(speedLabelPanel);
 
 		/*code to add in the constructor depending on the annotation type*/
 		String body1 = "", body2 = "";
 		if (annotation instanceof RealActuatorData){
 			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
-			body1 = annotationRealActuatorData.dataRange().inf() + "," + annotationRealActuatorData.dataRange().sup();
+			body1 = "(int)" + annotationRealActuatorData.dataRange().inf() + "," +
+					"(int)" + annotationRealActuatorData.dataRange().sup();
 			body2 = annotationRealActuatorData.unit().name();
 		}
 		if (annotation instanceof IntegerActuatorData){
@@ -89,9 +80,10 @@ public class SpeedDisplayPanelJavassist {
 			body2 = "  ";
 		}		
 		
-		CtConstructor cons_sdp = new CtConstructor(new CtClass[]{}, sdp);
+		CtConstructor cons_sdp = new CtConstructor(new CtClass[]{}, speedDisplayPanel);
 		cons_sdp.setBody(
-				"$0.setLayout(new java.awt.BorderLayout()) ;" +
+				"{" +
+						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 125) ;" +
 						"jpProgressBar = new javax.swing.JPanel() ;" +
 						"jpProgressBar.setLayout(new java.awt.FlowLayout()) ;" +
@@ -107,25 +99,16 @@ public class SpeedDisplayPanelJavassist {
 						"speedLabelPanel = new javax.swing.JPanel() ;" +
 						"speedLabelPanel.add(speedLabel) ;" +
 						"$0.add(speedLabelPanel, java.awt.BorderLayout.SOUTH) ;" +
-						"$0.setBorder(java.awt.BorderFactory.createLineBorder(Color.BLACK, 4)) ;" +
-				"$0.setVisible(true) ;");
+						"$0.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 4)) ;" +
+						"$0.setVisible(true) ;" +
+				"}");
 
-		CtMethod drt = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, sdp);
-		drt.setBody(
+		CtMethod updateSpeed = new CtMethod(CtClass.voidType,"updateSpeed", new CtClass[]{pool.get(currentRobot.getName() + "$SpeedData")}, speedDisplayPanel);
+		updateSpeed.setBody(
 				"{" +
-						"$0.speedSlider.addChangeListener(null) ;" +
-						"$0.lr = null ;" +
+						"$0.speedModel.setValue((int) Math.round($1.speed)) ;" +
 				"}");
-		sdp.addMethod(drt);
-
-		CtMethod crt = new CtMethod(CtClass.voidType,"connectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, sdp);
-		crt.setBody(
-				"{" +				
-						"$0.lr = $1 ;" +
-						"$0.speedSlider.addChangeListener(" +
-						"new " + board.getName() + "$SpeedActuatorDataListener(lr.getActuatorDataQueue())) ;" +
-				"}");
-		sdp.addMethod(crt);
+		speedDisplayPanel.addMethod(updateSpeed);
 
 	}
 	

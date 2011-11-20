@@ -10,7 +10,13 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+/**
+ * 
+ * @author Benoit GOEPFERT & Shiyue WANG
+ *
+ */
 public class SteeringPanelJavassist {
+	
 	/**
 	 * default constructor
 	 */
@@ -20,37 +26,42 @@ public class SteeringPanelJavassist {
 
 	/**
 	 * create the nested class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
+	 * @param pool the classpool that contains all the classes available at the loading of the current class
+	 * @param robot the current robot
+	 * @param board the TeleoperationBoard associated to the current robot
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board) throws CannotCompileException, NotFoundException{	
-		CtClass stp = board.makeNestedClass("SteeringPanel", true);
-		stp.setSuperclass(pool.get("javax.swing.JPanel"));
+	public static void create(ClassPool pool, CtClass robot, CtClass board) throws CannotCompileException, NotFoundException{	
+		
+		/*create nested class SteeringPanel*/
+		CtClass steeringPanel = board.makeNestedClass("SteeringPanel", true);
+		steeringPanel.setSuperclass(pool.get("javax.swing.JPanel"));
 
-		/**
-		 * @serialField serialVersionUID
-		 */
-		CtField svUID2 = new CtField(CtClass.longType, "serialVersionUID", stp);
-		svUID2.setModifiers(Modifier.PRIVATE |Modifier.STATIC |Modifier.FINAL);
-		stp.addField(svUID2,CtField.Initializer.constant(1L));
+		/* add field serialVersionUID */
+		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", steeringPanel);
+		serialVersionUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
+		steeringPanel.addField(serialVersionUID,CtField.Initializer.constant(1L));
 
-		CtField stdp = new CtField(pool.get(board.getName() + "$SteeringDisplayPanel"), "sdp", stp);
-		stdp.setModifiers(Modifier.PROTECTED);
-		stp.addField(stdp);
+		/* add field sdp */
+		CtField sdp = new CtField(pool.get(board.getName() + "$SteeringDisplayPanel"), "sdp", steeringPanel);
+		sdp.setModifiers(Modifier.PROTECTED);
+		steeringPanel.addField(sdp);
 
-		CtField stcp = new CtField(pool.get(board.getName() + "$SteeringControllerPanel"), "stcp", stp);
-		stcp.setModifiers(Modifier.PROTECTED);
-		stp.addField(stcp);				
+		/* add field scp */
+		CtField scp = new CtField(pool.get(board.getName() + "$SteeringControllerPanel"), "scp", steeringPanel);
+		scp.setModifiers(Modifier.PROTECTED);
+		steeringPanel.addField(scp);				
 
-		CtField lr2 = new CtField(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"), "lr", stp);
-		lr2.setModifiers(Modifier.PROTECTED);
-		stp.addField(lr2);
+		/* add field lr */
+		CtField lr = new CtField(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"), "lr", steeringPanel);
+		lr.setModifiers(Modifier.PROTECTED);
+		steeringPanel.addField(lr);
 
-		CtConstructor cons_stp = new CtConstructor(new CtClass[]{},stp);
-		cons_stp.setBody(
+		/* add constructor */
+		CtConstructor constructorSteeringPanel = new CtConstructor(new CtClass[]{},steeringPanel);
+		constructorSteeringPanel.setModifiers(Modifier.PUBLIC);
+		constructorSteeringPanel.setBody(
 				"{" +
 						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 250) ;" +
@@ -60,44 +71,35 @@ public class SteeringPanelJavassist {
 						"$0.add(scp, java.awt.BorderLayout.SOUTH) ;" +
 						"$0.setVisible(true) ;"	+
 				"}");
-		stp.addConstructor(cons_stp);
+		steeringPanel.addConstructor(constructorSteeringPanel);
 
-		CtMethod dr2 = new CtMethod(CtClass.voidType, "disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},stp);
-		dr2.setBody(
+		/* add method disconnectRobot */
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType, "disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},steeringPanel);
+		disconnectRobot.setModifiers(Modifier.PUBLIC);
+		disconnectRobot.setBody(
 				"{" +
 						"$0.scp.disconnectRobot($1) ;" +
 						"$0.lr = null ;" +
 				"}");
-		dr2.setModifiers(Modifier.PUBLIC);
-		stp.addMethod(dr2);
+		steeringPanel.addMethod(disconnectRobot);
 
-		CtMethod cr2 = new CtMethod(CtClass.voidType, "connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},stp);
-		cr2.setBody(
+		/* add method connectRobot */
+		CtMethod connectRobot = new CtMethod(CtClass.voidType, "connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},steeringPanel);
+		connectRobot.setModifiers(Modifier.PUBLIC);
+		connectRobot.setBody(
 				"{" +
 						"$0.lr = $1 ;" +
 						"$0.scp.connectRobot($1) ;" +
 				"}");
-		cr2.setModifiers(Modifier.PUBLIC);
-		stp.addMethod(cr2);
+		steeringPanel.addMethod(connectRobot);
 
-		CtMethod usa = new CtMethod(CtClass.voidType, "updateSteeringAngle", new CtClass[]{pool.get(robot.getName()+"$SteeringData")},stp);
-		usa.setBody(
+		/* add method updateSteeringAngle */
+		CtMethod updateSteeringAngle = new CtMethod(CtClass.voidType, "updateSteeringAngle", new CtClass[]{pool.get(robot.getName()+"$SteeringData")},steeringPanel);
+		updateSteeringAngle.setModifiers(Modifier.PUBLIC);
+		updateSteeringAngle.setBody(
 				"{" +
 						"$0.sdp.updateSteeringAngle($1) ;" +
 				"}");
-		usa.setModifiers(Modifier.PUBLIC);
-		stp.addMethod(usa);
+		steeringPanel.addMethod(updateSteeringAngle);
 	}
-	
-	/**
-	 * update the nested class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 */
-	public void update(ClassPool pool, CtClass board, Object ann) throws CannotCompileException, NotFoundException{	
-	
-	}	
 }

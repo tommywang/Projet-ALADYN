@@ -20,75 +20,75 @@ public class ActuatorDataReceptorJavassist {
 	/**
 	 * 
 	 * @param pool
-	 * @param robot
+	 * @param currentRobot
 	 * @throws RuntimeException
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	public void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
-
-		//create class
-		CtClass adr = robot.makeNestedClass("ActuatorDataReceptor", true);
-		adr.setSuperclass(pool.get("java.lang.Thread"));
+	public void create(ClassPool pool, CtClass currentRobot) throws RuntimeException, NotFoundException, CannotCompileException{
+		
+		/* create nested class ActuatorDataReceptor */
+		CtClass actuatorDataReceptor = currentRobot.makeNestedClass("ActuatorDataReceptor", true);
+		actuatorDataReceptor.setSuperclass(pool.get("java.lang.Thread"));
 	
 		//field commandQueue
-		CtField cq = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "commandQueue", adr);
-		cq.setModifiers(Modifier.FINAL);
-		cq.setModifiers(Modifier.PROTECTED);
-		adr.addField(cq);
+		CtField commmandQueue = new CtField(pool.get("java.util.concurrent.BlockingQueue"), "commandQueue", actuatorDataReceptor);
+		commmandQueue.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		actuatorDataReceptor.addField(commmandQueue);
 		
 		//field lr
-		CtField lr = new CtField(robot, "lr", adr);
-		lr.setModifiers(Modifier.FINAL);
-		lr.setModifiers(Modifier.PROTECTED);
-		adr.addField(lr);
+		CtField lr = new CtField(currentRobot, "lr", actuatorDataReceptor);
+		lr.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		actuatorDataReceptor.addField(lr);
 	
 		//constructor
-		CtConstructor cons_adr = new CtConstructor(new CtClass[]{robot}, adr);
-		cons_adr.setBody(
+		CtConstructor constructorActuatorDataReceptor = new CtConstructor(new CtClass[]{currentRobot}, actuatorDataReceptor);
+		constructorActuatorDataReceptor.setModifiers(Modifier.PUBLIC);
+		constructorActuatorDataReceptor.setBody(
 				"{\n" +
 					"super();\n" +
 					"$0.lr = $1;\n" +
 					"$0.commandQueue = new java.util.concurrent.ArrayBlockingQueue(1);\n" +
 				"}\n"
 				);
-		adr.addConstructor(cons_adr);
+		actuatorDataReceptor.addConstructor(constructorActuatorDataReceptor);
 
 		//method getCommandQueue
-		CtMethod gcq = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getCommandQueue", new CtClass[]{}, adr);
-		gcq.setBody(
+		CtMethod getCommandQueue = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getCommandQueue", new CtClass[]{}, actuatorDataReceptor);
+		getCommandQueue.setModifiers(Modifier.PUBLIC);
+		getCommandQueue.setBody(
 				"{\n" +
 						"return $0.commandQueue;\n" +
 				"}\n"
 				);
-		adr.addMethod(gcq);
+		actuatorDataReceptor.addMethod(getCommandQueue);
 		
 		//method start
-		CtMethod start2 = CtNewMethod.make(
-				"public synchronized void	start() {" +
+		CtMethod start = new CtMethod(CtClass.voidType, "start", new CtClass[]{}, actuatorDataReceptor);
+		start.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+		start.setBody(
+				"{" +
 					"$0.commandQueue.clear() ;" +
 					"super.start();" +
-				"}",
-				adr);
-		adr.addMethod(start2);
+				"}");
+		actuatorDataReceptor.addMethod(start);
 		
 		/**class of the robot*/
 		
 		//add field adr
-		CtField fadr = new CtField(adr, "adr", robot);
-		fadr.setModifiers(Modifier.PROTECTED);
-		fadr.setModifiers(Modifier.FINAL);
-		robot.addField(fadr);
+		CtField adr = new CtField(actuatorDataReceptor, "adr", currentRobot);
+		adr.setModifiers(Modifier.PROTECTED | Modifier.FINAL);
+		currentRobot.addField(adr);
 		
 		//method getActuatorDataQueue
-		CtMethod gadq = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getActuatorDataQueue", new CtClass[]{}, robot);
-		gadq.setBody(
+		CtMethod getActuatorDataQueue = new CtMethod(pool.get("java.util.concurrent.BlockingQueue"), "getActuatorDataQueue", new CtClass[]{}, currentRobot);
+		getActuatorDataQueue.setModifiers(Modifier.PUBLIC);
+		getActuatorDataQueue.setBody(
 			"{\n" +	
 					"return $0.adr.getCommandQueue() ;\n" +
 			"}\n");
-		robot.addMethod(gadq);		
+		currentRobot.addMethod(getActuatorDataQueue);
 		
-		adr.toClass();
 	}
 	
 	/**
@@ -100,9 +100,10 @@ public class ActuatorDataReceptorJavassist {
 	 */
 	public void update(ClassPool pool, CtClass robot) throws NotFoundException, CannotCompileException{
 		
-		CtClass adr = pool.getCtClass("fr.upmc.dtgui.tests.ActuatorDataReceptor");
+		CtClass actuatorDataReceptor = pool.getCtClass(robot.getName() + "$ActuatorDataReceptor");
 		
-		CtMethod run = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, adr);
+		CtMethod run = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, actuatorDataReceptor);
+		run.setModifiers(Modifier.PUBLIC);
 		run.setBody(
 				"{\n" +
 					"fr.upmc.dtgui.robot.RobotActuatorCommand rac = null ;\n" +
@@ -110,12 +111,14 @@ public class ActuatorDataReceptorJavassist {
 						"try {\n" +
 							"rac = $0.commandQueue.take() ;\n" +
 							"rac.performOn($0.lr) ;\n" +
-						"} catch (InterruptedException e) {\n" +
+						"} catch (java.lang.InterruptedException e) {\n" +
 							"e.printStackTrace();\n" +
 						"}\n" +
 					"}\n" +
 				"}\n"
 				);
-		adr.addMethod(run);
+		actuatorDataReceptor.addMethod(run);
+		
+		actuatorDataReceptor.toClass();		
 	}
 }

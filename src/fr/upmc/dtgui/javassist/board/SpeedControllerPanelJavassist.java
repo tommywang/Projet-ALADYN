@@ -37,7 +37,7 @@ public class SpeedControllerPanelJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
+	public static void create(ClassPool pool, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
 		
 		/* create class SpeedControllerPanel */
 		CtClass scp=board.makeNestedClass("SpeedControllerPanel", true);
@@ -72,7 +72,8 @@ public class SpeedControllerPanelJavassist {
 		String body1 = "", body2 = "";
 		if (annotation instanceof RealActuatorData){
 			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
-			body1 = annotationRealActuatorData.dataRange().inf() + "," + annotationRealActuatorData.dataRange().sup();
+			body1 = "(int)" + annotationRealActuatorData.dataRange().inf() + "," +
+					"(int)" + annotationRealActuatorData.dataRange().sup();
 			body2 = annotationRealActuatorData.unit().name();
 		}
 		if (annotation instanceof IntegerActuatorData){
@@ -89,42 +90,46 @@ public class SpeedControllerPanelJavassist {
 		CtConstructor cons_scp = new CtConstructor(new CtClass[]{}, scp);
 		cons_scp.setBody(
 				"{" +
-						"$0.setLayout(new BorderLayout()) ;" +
+						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 125) ;" +
-						"JLabel speedLabel = new JLabel(\"Speed control (" + body2 + ")\") ;" +
+						"javax.swing.JLabel speedLabel = new javax.swing.JLabel(\"Speed control (" + body2 + ")\") ;" +
 						"speedLabelPanel = new javax.swing.JPanel() ;" +
 						"speedLabelPanel.add(speedLabel) ;" +
 						"this.add(speedLabelPanel, java.awt.BorderLayout.SOUTH) ;" +
-						"DefaultBoundedRangeModel speedModel =" +
-						"new DefaultBoundedRangeModel(0, 0, " + body1 +") ;" +
-						"speedSlider = new JSlider(speedModel) ;" +
+						"javax.swing.DefaultBoundedRangeModel speedModel =" +
+						"new javax.swing.DefaultBoundedRangeModel(0, 0, " + body1 +") ;" +
+						"speedSlider = new javax.swing.JSlider(speedModel) ;" +
 						"speedSlider.setMajorTickSpacing(5);" +
 						"speedSlider.setMinorTickSpacing(1);" +
 						"speedSlider.setPaintTicks(true);" +
 						"speedSlider.setPaintLabels(true);" +
-						"speedSliderPanel = new JPanel() ;" +
+						"speedSliderPanel = new javax.swing.JPanel() ;" +
 						"speedSliderPanel.add(speedSlider) ;" +
-						"this.add(speedSliderPanel, BorderLayout.NORTH) ;" +
-						"this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4)) ;" +
+						"this.add(speedSliderPanel, java.awt.BorderLayout.NORTH) ;" +
+						"this.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 4)) ;" +
 						"this.setVisible(true) ;" +
 				"}");
 
-		CtMethod dr = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, scp);
-		dr.setBody(
+		/* add method disconnectRobot */
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{}, scp);
+		disconnectRobot.setModifiers(Modifier.PUBLIC);
+		disconnectRobot.setBody(
 				"{" +
 						"$0.speedSlider.addChangeListener(null) ;" +
 						"$0.lr = null ;" +
 				"}");
-		scp.addMethod(dr);
+		scp.addMethod(disconnectRobot);
 
-		CtMethod cr = new CtMethod(CtClass.voidType,"connectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, scp);
-		cr.setBody(
+		/* add method connectRobot */
+		CtMethod connectRobot = new CtMethod(CtClass.voidType,"connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")}, scp);
+		connectRobot.setModifiers(Modifier.PUBLIC);
+		connectRobot.setBody(
 				"{" +				
 						"$0.lr = $1 ;" +
 						"$0.speedSlider.addChangeListener(" +
-						"new " + board.getName() + "$SpeedActuatorDataListener(lr.getActuatorDataQueue())) ;" +
+						"new " + board.getName() + "$SpeedActuatorDataListener($1.getActuatorDataQueue())) ;" +
 				"}");
-		scp.addMethod(cr);
+		scp.addMethod(connectRobot);
 	}
 	
 }

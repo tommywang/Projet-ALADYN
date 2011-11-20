@@ -230,7 +230,7 @@ public class		LittleRobotTeleoperationBoard
 		}
 
 		public void		disconnectRobot(InstrumentedRobot lr2) {
-			this.scp.disconnectRobot(lr) ;
+			this.scp.disconnectRobot(lr2) ;
 			this.lr = null ;
 		}
 

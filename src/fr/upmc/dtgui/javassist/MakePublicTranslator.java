@@ -61,10 +61,10 @@ public class MakePublicTranslator implements Translator {
 				/* bool to check if there is a sensor when we are in the actuator */
 				boolean hasAlreadySensorOrActuator = false;
 				
-				for (int i=0; i<classAnnotations.length; i++){
+				for (Object classAnnotation : classAnnotations){
 					
 					/*initial management of the robot, if it has not yet been done*/
-					if (classAnnotations[i] instanceof WithSensors){
+					if (classAnnotation instanceof WithSensors){
 						
 						/* initial management of the robot */
 						if (!hasAlreadySensorOrActuator){
@@ -96,10 +96,12 @@ public class MakePublicTranslator implements Translator {
 						
 						/*a sensor has been found*/
 						hasAlreadySensorOrActuator = true;
+						
 					}
 					
 					/*if the current annotation is a actuator*/
-					if (classAnnotations[i] instanceof WithActuators){
+					if (classAnnotation instanceof WithActuators){
+						
 						
 						/* initial management of the board */
 						boardManager.manageActuatorsInitial(pool, currentClass);				
@@ -123,8 +125,8 @@ public class MakePublicTranslator implements Translator {
 							methodAnnotations=method.getAnnotations();
 							if (methodAnnotations.length>0){
 								for (Object methodAnnotation : methodAnnotations){			
-									robotManager.manageActuatorsNext(pool, currentClass, methodAnnotation);
-									boardManager.manageActuatorsDisplayController(pool, currentClass, methodAnnotation);
+									robotManager.manageActuators(pool, currentClass, methodAnnotation);
+									boardManager.manageActuatorsDataListenerDisplayController(pool, currentClass, methodAnnotation);
 								}
 							}
 						}
@@ -138,6 +140,7 @@ public class MakePublicTranslator implements Translator {
 						
 						/*an actuator has been found*/
 						hasAlreadySensorOrActuator = true;
+						
 					}
 				}
 			}

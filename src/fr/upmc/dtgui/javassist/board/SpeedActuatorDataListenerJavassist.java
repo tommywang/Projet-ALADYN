@@ -29,7 +29,7 @@ public class SpeedActuatorDataListenerJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{	
+	public static void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{	
 		
 		/**
 		 * create class SpeedActuatorDataListener

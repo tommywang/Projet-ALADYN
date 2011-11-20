@@ -58,70 +58,51 @@ public class RobotManager {
 			/* if the field is position and is found for the first time */
 			if (annotationRealSensorData.groupName().equals("position") && (this.position)){
 
-				/**
-				 * add method getPositioningData
-				 * @return a new instance of PositioningData
-				 */
-				CtMethod gpd = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
+				/* add method getPositioningData */
+				CtMethod getPositioningData = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
 						"getPositioningData", new CtClass[]{}, robot);
-				gpd.setBody(
+				getPositioningData.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+				getPositioningData.setBody(
 						"{\n" +
 								"return new fr.upmc.dtgui.robot.PositioningData(" +
 								"this.getX(), this.getY(), this.getDirection()) ;\n" +
 						"}\n");
-				gpd.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
-				robot.addMethod(gpd);
+				robot.addMethod(getPositioningData);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body="$0.dataQueue.add($0.lr.getPositioningData());\n";
 				this.sensorDataServerRunBody+=body;
 
-				/**
-				 * prevent of repeating the same actions if the same annotation is found
-				 */
+				/* prevent of repeating the same actions if the same annotation is found */
 				this.position=false;
 			}
 			if (annotationRealSensorData.groupName().equals("energy")){
 
-				/**
-				 * create class EnergyData
-				 */
+				/* create class EnergyData */
 				EnergyDataJavassist edj = new EnergyDataJavassist();
 				edj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationRealSensorData.groupName().equals("speed")){
 
-				/**
-				 * create class SpeedData
-				 */
+				/* create class SpeedData */
 				SpeedDataJavassist spdj = new SpeedDataJavassist();
 				spdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationRealSensorData.groupName().equals("steering")){
 
-				/**
-				 * create class SteeringData
-				 */
+				/* create class SteeringData */
 				SteeringDataJavassist stdj = new SteeringDataJavassist();
 				stdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
@@ -134,70 +115,51 @@ public class RobotManager {
 			/* if the field is position and is found for the first time */
 			if (annotationIntegerSensorData.groupName().equals("position") && (this.position)){
 
-				/**
-				 * add method getPositioningData
-				 * @return a new instance of PositioningData
-				 */
-				CtMethod gpd = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
+				/* add method getPositioningData */
+				CtMethod getPositioningData = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
 						"getPositioningData", new CtClass[]{}, robot);
-				gpd.setBody(
+				getPositioningData.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+				getPositioningData.setBody(
 						"{\n" +
 								"return new fr.upmc.dtgui.robot.PositioningData(" +
 								"this.getX(), this.getY(), this.getDirection()) ;\n" +
 						"}\n");
-				gpd.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
-				robot.addMethod(gpd);
+				robot.addMethod(getPositioningData);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body="$0.dataQueue.add($0.lr.getPositioningData());\n";
 				this.sensorDataServerRunBody+=body;
 
-				/**
-				 * prevent of repeating the same actions if the same annotation is found
-				 */
+				/* prevent of repeating the same actions if the same annotation is found */
 				this.position=false;
 			}
 			if (annotationIntegerSensorData.groupName().equals("energy")){
 
-				/**
-				 * create class EnergyData
-				 */
+				/* create class EnergyData */
 				EnergyDataJavassist edj = new EnergyDataJavassist();
 				edj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationIntegerSensorData.groupName().equals("speed")){
 
-				/**
-				 * create class SpeedData
-				 */
+				/* create class SpeedData */
 				SpeedDataJavassist spdj = new SpeedDataJavassist();
 				spdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationIntegerSensorData.groupName().equals("steering")){
 
-				/**
-				 * create class SteeringData
-				 */
+				/* create class SteeringData */
 				SteeringDataJavassist stdj = new SteeringDataJavassist();
 				stdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
@@ -210,19 +172,16 @@ public class RobotManager {
 			/* if the field is position and is found for the first time */
 			if (annotationBooleanSensorData.groupName().equals("position") && (this.position)){
 
-				/**
-				 * add method getPositioningData
-				 * @return a new instance of PositioningData
-				 */
-				CtMethod gpd = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
+				/* add method getPositioningData */
+				CtMethod getPositioningData = new CtMethod(pool.get("fr.upmc.dtgui.robot.PositioningData"),
 						"getPositioningData", new CtClass[]{}, robot);
-				gpd.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
-				gpd.setBody(
+				getPositioningData.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+				getPositioningData.setBody(
 						"{\n" +
 								"return new fr.upmc.dtgui.robot.PositioningData(" +
-								"this.getX(), this.getY(), this.getDirection()) ;\n" +
+								"$0.getX(), $0.getY(), $0.getDirection()) ;\n" +
 						"}\n");
-				robot.addMethod(gpd);
+				robot.addMethod(getPositioningData);
 
 				/**
 				 * add code in method run of SensorDataSender
@@ -237,54 +196,47 @@ public class RobotManager {
 			}
 			if (annotationBooleanSensorData.groupName().equals("energy")){
 
-				/**
-				 * create class EnergyData
-				 */
+				/* create class EnergyData */
 				EnergyDataJavassist edj = new EnergyDataJavassist();
 				edj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getEnergyData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationBooleanSensorData.groupName().equals("speed")){
 
-				/**
-				 * create class SpeedData
-				 */
+				/* create class SpeedData */
 				SpeedDataJavassist spdj = new SpeedDataJavassist();
 				spdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(lr.getSpeedData()) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 			if (annotationBooleanSensorData.groupName().equals("steering")){
 
-				/**
-				 * create class SteeringData
-				 */
+				/* create class SteeringData */
 				SteeringDataJavassist stdj = new SteeringDataJavassist();
 				stdj.create(pool, robot);
 
-				/**
-				 * add code in method run of SensorDataSender
-				 */
+				/* add code in method run of SensorDataSender */
 				String body = "dataQueue.add(new " + robot.getName() + "$SteeringData(lr.steeringAngle)) ;\n";
 				this.sensorDataServerRunBody+=body;
 			}
 		}
 	}
 
+	/**
+	 * 
+	 * @param pool
+	 * @param robot
+	 * @param listCons
+	 * @throws CannotCompileException
+	 */
 	public void manageSensorsFinal(ClassPool pool, CtClass robot, CtConstructor[] listCons) throws CannotCompileException{
 
-		/**
-		 * modify main constructor
-		 */
+		/* modify main constructor */
 		for (int j=0; j<listCons.length;j++){
 			listCons[j].insertAfter(
 					"{" +
@@ -302,7 +254,7 @@ public class RobotManager {
 	 * @throws RuntimeException
 	 * @throws NotFoundException
 	 */
-	public void manageActuatorsNext(ClassPool pool, CtClass robot, Object annotation) throws CannotCompileException, RuntimeException, NotFoundException{
+	public void manageActuators(ClassPool pool, CtClass robot, Object annotation) throws CannotCompileException, RuntimeException, NotFoundException{
 
 		if (annotation instanceof RealActuatorData){
 
@@ -437,7 +389,7 @@ public class RobotManager {
 				robot.addMethod(mstc);
 
 			}
-		}		
+		}	
 	}
 
 
