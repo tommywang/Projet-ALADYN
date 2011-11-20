@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import fr.upmc.dtgui.annotations.IntegerActuatorData;
 import fr.upmc.dtgui.annotations.RealActuatorData;
 import fr.upmc.dtgui.annotations.BooleanActuatorData;
+import fr.upmc.dtgui.annotations.RealSensorData;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -45,6 +46,8 @@ public class BoardManager {
 		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", board);
 		serialVersionUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
 		board.addField(serialVersionUID,CtField.Initializer.constant(1L));
+		
+		
 		
 		/* management class of ActuatorDataSender */
 		ActuatorDataSenderJavassist.create(pool, board);
@@ -88,7 +91,12 @@ public class BoardManager {
 		if (annotation instanceof RealActuatorData){
 			
 			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
-
+			
+			/* annotation field groupName = speed */
+			if (annotationRealActuatorData.groupName().equals("energy")){
+				EnergyPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
+			}
+			
 			/* annotation field groupName = speed */
 			if (annotationRealActuatorData.groupName().equals("speed")){
 				
@@ -172,9 +180,19 @@ public class BoardManager {
 	}
 
 	public void manageActuatorsPanel(ClassPool pool, CtClass currentRobot, Object annotation) throws NotFoundException, CannotCompileException{
-		
+
 		CtClass board = pool.get(currentRobot.getName()+"TeleoperationBoard");
 
+		if (annotation instanceof RealSensorData){
+
+			RealSensorData annotationRealActuatorData = (RealSensorData)annotation;
+
+			/* annotation field groupName = energy */
+			if (annotationRealActuatorData.groupName().equals("energy")){
+				EnergyPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
+
+			}
+		}
 		/* annotation RealActuatorData */
 		if (annotation instanceof RealActuatorData){
 			
@@ -182,14 +200,14 @@ public class BoardManager {
 
 			/* annotation field groupName = energy */
 			if (annotationRealActuatorData.groupName().equals("energy")){
-				
+				System.out.println("real");
 				EnergyPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
 
 			}
 			
 			/* annotation field groupName = speed */
 			if (annotationRealActuatorData.groupName().equals("speed")){
-				
+				//System.out.println("real");
 				SpeedPanelJavassist.create(pool, currentRobot, board);
 
 			}			
@@ -210,14 +228,14 @@ public class BoardManager {
 
 			/* annotation field groupName = energy */
 			if (annotationIntegerActuatorData.groupName().equals("energy")){
-				
+				//System.out.println("integer");
 				EnergyPanelJavassist.create(pool, currentRobot, board, annotationIntegerActuatorData);
 
 			}
 			
 			/* annotation field groupName = speed */
 			if (annotationIntegerActuatorData.groupName().equals("speed")){
-				
+				//System.out.println("integer");
 				SpeedPanelJavassist.create(pool, currentRobot, board);
 
 			}			
@@ -238,14 +256,14 @@ public class BoardManager {
 
 			/* annotation field groupName = energy */
 			if (annotationBooleanActuatorData.groupName().equals("energy")){
-				
+				//System.out.println("bool");
 				EnergyPanelJavassist.create(pool, currentRobot, board, annotationBooleanActuatorData);
 
 			}
 			
 			/* annotation field groupName = speed */
 			if (annotationBooleanActuatorData.groupName().equals("speed")){
-				
+				//System.out.println("bool");
 				SpeedPanelJavassist.create(pool, currentRobot, board);
 
 			}			
