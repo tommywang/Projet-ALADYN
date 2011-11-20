@@ -23,7 +23,7 @@ public class RobotSpeedDataTest extends TestCase {
 	public void testMakeClass() 
 			throws Throwable{
 		try{
-			pool.get("fr.upmc.dtgui.tests.LittleRobot$SpeedData");
+			pool.get("fr.upmc.dtgui.tests.LittleRobotTeleoperationBoard$SpeedData");
 		}
 		catch(Exception e){
 			classFound=false;
