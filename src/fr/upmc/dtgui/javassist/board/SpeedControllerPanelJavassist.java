@@ -112,7 +112,7 @@ public class SpeedControllerPanelJavassist {
 		scp.addConstructor(cons_scp);
 
 		/* add method disconnectRobot */
-		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{}, scp);
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")}, scp);
 		disconnectRobot.setModifiers(Modifier.PUBLIC);
 		disconnectRobot.setBody(
 				"{" +

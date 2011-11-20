@@ -107,9 +107,10 @@ public class SteeringControllerPanelJavassist {
 						"this.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 4)) ;" +
 						"this.setVisible(true) ;" +
 				"}");
+		steeringControllerPanel.addConstructor(constructorSteeringControllerPanel);
 
 		/* add method disconnectRobot */
-		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{}, steeringControllerPanel);
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")}, steeringControllerPanel);
 		disconnectRobot.setModifiers(Modifier.PUBLIC);
 		disconnectRobot.setBody(
 				"{" +
