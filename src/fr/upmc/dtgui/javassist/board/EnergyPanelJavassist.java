@@ -2,6 +2,9 @@ package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
 
+import fr.upmc.dtgui.annotations.BooleanActuatorData;
+import fr.upmc.dtgui.annotations.IntegerActuatorData;
+import fr.upmc.dtgui.annotations.RealActuatorData;
 import fr.upmc.dtgui.annotations.RealSensorData;
 
 import javassist.CannotCompileException;
@@ -12,6 +15,11 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+/**
+ * 
+ * @author Benoit GOEPFERT & Shiyue WANG
+ *
+ */
 public class EnergyPanelJavassist {
 	
 	/**
@@ -22,58 +30,62 @@ public class EnergyPanelJavassist {
 	}
 
 	/**
-	 * create the nested class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
+	 * create the nested class EnergyDisplayPanel
+	 * @param pool the classpool that contains all the classes available at the loading of the current class
+	 * @param board the TeleoperationBoard associated to the current robot
+	 * @param annotation the current annotation
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board, RealSensorData annot) throws CannotCompileException, NotFoundException{	
-		/**
-		 * create class EnergyPanel
-		 */
-		CtClass ep=board.makeNestedClass("EnergyPanel", true);
-		ep.setSuperclass(pool.get("javax.swing.JPanel"));
+	public static void create(ClassPool pool, CtClass robot, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{
+		
+		/* create class EnergyPanel */
+		CtClass energyPanel=board.makeNestedClass("EnergyPanel", true);
+		energyPanel.setSuperclass(pool.get("javax.swing.JPanel"));
 
-		/**
-		 * @serialField serialVersionUID
-		 */
-		CtField svUID = new CtField(CtClass.longType, "serialVersionUID", ep);
-		svUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-		ep.addField(svUID,CtField.Initializer.constant(1L));
+		/* add field serialVersionUID */
+		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", energyPanel);
+		serialVersionUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
+		energyPanel.addField(serialVersionUID,CtField.Initializer.constant(1L));
 
-		/**
-		 * add field energyModel
-		 */
-		CtField em= new CtField(pool.get("javax.swing.BoundedRangeModel"),"energyModel", ep);
-		em.setModifiers(Modifier.PROTECTED);
-		ep.addField(em);
+		/* add field energyModel */
+		CtField energyModel= new CtField(pool.get("javax.swing.BoundedRangeModel"),"energyModel", energyPanel);
+		energyModel.setModifiers(Modifier.PROTECTED);
+		energyPanel.addField(energyModel);
 
-		/**
-		 * add field jpEnergySlider
-		 */
-		CtField jes = new CtField(pool.get("javax.swing.JPanel"),"jpEnergySlider", ep);
-		jes.setModifiers(Modifier.PROTECTED);
-		ep.addField(jes);
+		/* add field jpEnergySlider */
+		CtField jpEnergySlider = new CtField(pool.get("javax.swing.JPanel"),"jpEnergySlider", energyPanel);
+		jpEnergySlider.setModifiers(Modifier.PROTECTED);
+		energyPanel.addField(jpEnergySlider);
 
-		/**
-		 * add field jpEcvlabel
-		 */
-		CtField jel = new CtField(pool.get("javax.swing.JPanel"),"jpEcvLabel", ep);
-		jel.setModifiers(Modifier.PROTECTED);
-		ep.addField(jel);
+		/* add field jpEcvlabel */
+		CtField jpEcvLabel = new CtField(pool.get("javax.swing.JPanel"),"jpEcvLabel", energyPanel);
+		jpEcvLabel.setModifiers(Modifier.PROTECTED);
+		energyPanel.addField(jpEcvLabel);
+		
+		/*code to add in the constructor depending on the annotation type*/
+		String body1 = "";
+		if (annotation instanceof RealActuatorData){
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+			body1 = "(int)" + annotationRealActuatorData.dataRange().inf() + "," +
+					"(int)" + annotationRealActuatorData.dataRange().sup();
+		}
+		if (annotation instanceof IntegerActuatorData){
+			IntegerActuatorData annotationIntegerActuatorData = (IntegerActuatorData)annotation;
+			body1 = annotationIntegerActuatorData.dataRange().inf() + "," + annotationIntegerActuatorData.dataRange().sup();
+		}
+		if (annotation instanceof BooleanActuatorData){
+			body1 = "0 , 1";
+		}
 
-		/**
-		 * add constructor
-		 */
-		CtConstructor cons_ep = new CtConstructor(new CtClass[]{}, ep);
-		cons_ep.setBody(
+		/* add constructor */
+		CtConstructor constructorEnergyPanel = new CtConstructor(new CtClass[]{}, energyPanel);
+		constructorEnergyPanel.setBody(
 				"{\n" +
 						"$0.setSize(50, 250) ;" +
 						"$0.setLayout(new javax.swing.BoxLayout.BoxLayout($0, BoxLayout.Y_AXIS)) ;" +
 						"$0.energyModel = new javax.swing.DefaultBoundedRangeModel.DefaultBoundedRangeModel(" +
-								"0, 0, " + annot.dataRange().inf() + "," + annot.dataRange().sup() + ") ;" +
+								"0, 0, " + body1 + ") ;" +
 						"javax.swing.JSlider energySlider = new javax.swing.JSlider(energyModel) ;" +
 						"energySlider.setOrientation(javax.swing.JSlider.VERTICAL) ;" +
 						"energySlider.setMajorTickSpacing(20);" +
@@ -91,34 +103,24 @@ public class EnergyPanelJavassist {
 						"$0.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK, 4)) ;" +
 						"$0.setVisible(true);\n" +
 				"}");
-		ep.addConstructor(cons_ep);
+		energyPanel.addConstructor(constructorEnergyPanel);
 		
-		CtMethod sv = new CtMethod(CtClass.voidType,"setVisible", new CtClass[]{CtClass.booleanType},ep);
-		sv.setBody(
+		/* add method setVisible */
+		CtMethod setVisible = new CtMethod(CtClass.voidType,"setVisible", new CtClass[]{CtClass.booleanType},energyPanel);
+		setVisible.setBody(
 				"{" +
 					"super.setVisible(aFlag);" +
 					"$0.jpEnergySlider.setVisible(aFlag) ;" +
 					"$0.jpEcvLabel.setVisible(aFlag) ;" +
 				"}");
-		ep.addMethod(sv);
+		energyPanel.addMethod(setVisible);
 		
-		CtMethod ue = new CtMethod(CtClass.voidType,"updateEnergy", new CtClass[]{pool.get(robot.getName() + "$EnergyData")},ep);
-		ue.setBody(
+		/* add method updateEnergy */
+		CtMethod updateEnergy = new CtMethod(CtClass.voidType,"updateEnergy", new CtClass[]{pool.get(robot.getName() + "$EnergyData")},energyPanel);
+		updateEnergy.setBody(
 				"{" +
 						"$0.energyModel.setValue((int) java.lang.Math.round($1.level)) ;" +
 				"}");
-		ep.addMethod(ue);
+		energyPanel.addMethod(updateEnergy);
 	}
-	
-	/**
-	 * update the nested class SpeedDisplayPanel
-	 * @param pool
-	 * @param board
-	 * @param ann
-	 * @throws CannotCompileException
-	 * @throws NotFoundException
-	 */
-	public void update(ClassPool pool, CtClass board, Object ann) throws CannotCompileException, NotFoundException{	
-	
-	}	
 }

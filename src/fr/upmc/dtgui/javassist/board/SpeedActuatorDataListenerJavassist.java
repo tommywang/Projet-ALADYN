@@ -29,7 +29,7 @@ public class SpeedActuatorDataListenerJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{	
+	public static void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{	
 		
 		/**
 		 * create class SpeedActuatorDataListener
@@ -41,8 +41,7 @@ public class SpeedActuatorDataListenerJavassist {
 		 * add field commandQueue
 		 */
 		CtField cq_spadl = new CtField(pool.get("java.util.concurrent.BlockingQueue"),"commandQueue", spadl);
-		cq_spadl.setModifiers(Modifier.FINAL);
-		cq_spadl.setModifiers(Modifier.PROTECTED);
+		cq_spadl.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
 		spadl.addField(cq_spadl);
 	
 		/**
@@ -55,21 +54,7 @@ public class SpeedActuatorDataListenerJavassist {
 						"$0.commandQueue = $1;"	+
 				"}");
 		spadl.addConstructor(cons_spadl);
-	
-		/**
-		 * method stateChanged
-		 * @param ChangeEvent e : a change event in the speed
-		 */
-		CtMethod stc_spadl = new CtMethod(CtClass.voidType,"stateChanged",new CtClass[]{pool.get("javax.swing.event.ChangeEvent")},spadl);
-		stc_spadl.setBody(
-				"{" +
-						"javax.swing.JSlider source = (javax.swing.JSlider)$1.getSource() ;" +
-						"double newSpeed = source.getValue() ;" +
-						"final fr.upmc.dtgui.robot.RobotActuatorCommand sc =" +
-						robot.getName() + ".makeSpeedChange(newSpeed) ;" +
-						"(new " + board.getName() + "$ActuatorDataSender(sc, $0.commandQueue)).start() ;" +
-				"}");
-		spadl.addMethod(stc_spadl);
+
 	}
 	
 	/**
@@ -81,6 +66,19 @@ public class SpeedActuatorDataListenerJavassist {
 	 * @throws NotFoundException
 	 */
 	public void update(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{		
-	
+		
+		CtClass spadl = pool.get(board.getName()+"$SpeedActuatorDataListener");
+		
+		/* method stateChanged*/
+		CtMethod stc_spadl = new CtMethod(CtClass.voidType,"stateChanged",new CtClass[]{pool.get("javax.swing.event.ChangeEvent")},spadl);
+		stc_spadl.setBody(
+				"{" +
+						"javax.swing.JSlider source = (javax.swing.JSlider)$1.getSource() ;" +
+						"double newSpeed = source.getValue() ;" +
+						"final fr.upmc.dtgui.robot.RobotActuatorCommand sc =" +
+						robot.getName() + ".makeSpeedChange(newSpeed) ;" +
+						"(new " + board.getName() + "$ActuatorDataSender(sc, $0.commandQueue)).start() ;" +
+				"}");
+		spadl.addMethod(stc_spadl);
 	}
 }

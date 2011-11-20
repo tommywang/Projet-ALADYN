@@ -4,9 +4,6 @@
 package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
-
-import fr.upmc.dtgui.annotations.RealSensorData;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -37,46 +34,38 @@ public class SpeedPanelJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board, RealSensorData annot) throws CannotCompileException, NotFoundException{	
-		/**
-		 * create class SpeedPanel
-		 */
-		CtClass spp = board.makeNestedClass("SpeedPanel", true);
-		spp.setSuperclass(pool.get("javax.swing.JPanel"));
+	public static void create(ClassPool pool, CtClass robot, CtClass board) throws CannotCompileException, NotFoundException{	
+		
+		/* create class SpeedPanel */
+		CtClass speedPanel = board.makeNestedClass("SpeedPanel", true);
+		speedPanel.setSuperclass(pool.get("javax.swing.JPanel"));
 
-		/**
-		 * @serialField serialVersionUID
-		 */
-		CtField svUID = new CtField(CtClass.longType, "serialVersionUID", spp);
-		svUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-		spp.addField(svUID,CtField.Initializer.constant(1L));
+		/* add field serialVersionUID */
+		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", speedPanel);
+		serialVersionUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
+		speedPanel.addField(serialVersionUID,CtField.Initializer.constant(1L));
+		
+		/* add field SpeedDisplayPanel */
+		CtField sdp = new CtField(pool.get(board.getName() + "$SpeedDisplayPanel"), "sdp", speedPanel);
+		sdp.setModifiers(Modifier.PROTECTED);
+		speedPanel.addField(sdp);
 
-		/**
-		 * add field SpeedDisplayPanel
-		 */
-		CtField spdp = new CtField(pool.get(board.getName() + "$SpeedDisplayPanel"), "sdp", spp);
-		spdp.setModifiers(Modifier.PROTECTED);
-		spp.addField(spdp);
+		/* add field SpeedControllerPanel */
+		CtField scp = new CtField(pool.get(board.getName() + "$SpeedControllerPanel"), "scp", speedPanel);
+		scp.setModifiers(Modifier.PROTECTED);
+		speedPanel.addField(scp);				
 
-		/**
-		 * add field SpeedControllerPanel
-		 */
-		CtField spcp = new CtField(pool.get(board.getName() + "$SpeedControllerPanel"), "scp", spp);
-		spcp.setModifiers(Modifier.PROTECTED);
-		spp.addField(spcp);				
-
-		/**
-		 * add field lr
-		 */
-		CtField lr = new CtField(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"), "lr", spp);
+		/* add field lr */
+		CtField lr = new CtField(pool.get("fr.upmc.dtgui.robot.InstrumentedRobot"), "lr", speedPanel);
 		lr.setModifiers(Modifier.PROTECTED);
-		spp.addField(lr);
+		speedPanel.addField(lr);
 
-		/**
-		 * add constructor
-		 */
-		CtConstructor cons_spp = new CtConstructor(new CtClass[]{},spp);
-		cons_spp.setBody(
+		/* add constructor */
+		CtConstructor constructorSpeedPanel = new CtConstructor(new CtClass[]{},speedPanel);
+		constructorSpeedPanel.setModifiers(Modifier.PUBLIC);		
+		//CtClass he= pool.get(board.getName() + "$SpeedDisplayPanel() ;");
+		//System.out.println(he);
+		constructorSpeedPanel.setBody(
 				"{" +
 						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 250) ;" +
@@ -86,32 +75,35 @@ public class SpeedPanelJavassist {
 						"$0.add(scp, java.awt.BorderLayout.SOUTH) ;" +
 						"$0.setVisible(true) ;"	+
 				"}");
-		spp.addConstructor(cons_spp);
+		speedPanel.addConstructor(constructorSpeedPanel);
 
-		CtMethod dr = new CtMethod(CtClass.voidType, "disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},spp);
-		dr.setBody(
+		/* add method disconnectRobot */
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType, "disconnectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},speedPanel);
+		disconnectRobot.setModifiers(Modifier.PUBLIC);
+		disconnectRobot.setBody(
 				"{" +
 						"$0.scp.disconnectRobot($1) ;" +
 						"$0.lr = null ;" +
 				"}");
-		dr.setModifiers(Modifier.PUBLIC);
-		spp.addMethod(dr);
+		speedPanel.addMethod(disconnectRobot);
 
-		CtMethod cr = new CtMethod(CtClass.voidType, "connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},spp);
-		dr.setBody(
+		/* add method connectRobot */
+		CtMethod connectRobot = new CtMethod(CtClass.voidType, "connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")},speedPanel);
+		connectRobot.setModifiers(Modifier.PUBLIC);
+		connectRobot.setBody(
 				"{" +
 						"$0.lr = $1 ;" +
 						"$0.scp.connectRobot($1) ;" +
 				"}");
-		cr.setModifiers(Modifier.PUBLIC);
-		spp.addMethod(dr);
+		speedPanel.addMethod(connectRobot);
 
-		CtMethod usa = new CtMethod(CtClass.voidType, "updateSpeed", new CtClass[]{pool.get(robot.getName()+"$SpeedData")},spp);
-		usa.setBody(
+		/* add method updateSpeed */
+		CtMethod updateSpeed = new CtMethod(CtClass.voidType, "updateSpeed", new CtClass[]{pool.get(robot.getName()+"$SpeedData")},speedPanel);
+		updateSpeed.setModifiers(Modifier.PUBLIC);
+		updateSpeed.setBody(
 				"{" +
 						"$0.sdp.updateSpeed($1) ;" +
 				"}");
-		usa.setModifiers(Modifier.PUBLIC);
-		spp.addMethod(usa);
+		speedPanel.addMethod(updateSpeed);
 	}
 }

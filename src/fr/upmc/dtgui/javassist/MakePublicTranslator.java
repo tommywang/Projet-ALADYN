@@ -21,7 +21,7 @@ import fr.upmc.dtgui.javassist.robot.SensorDataSenderJavassist;
 public class MakePublicTranslator implements Translator {
 	
 	/**
-	 * constructor
+	 * default constructor
 	 */
 	public MakePublicTranslator(){
 	
@@ -30,8 +30,8 @@ public class MakePublicTranslator implements Translator {
 	/**
 	 * the method onLoad is automatically called at the creation of any new instance of a class in the project
 	 * all the modifications in this project will be performed here
-	 * @param pool : the default classpool
-	 * @param className : the absolute name of the class in loading
+	 * @param pool the default classpool
+	 * @param className the absolute name of the class in loading
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
@@ -43,131 +43,106 @@ public class MakePublicTranslator implements Translator {
 			CtClass currentClass=pool.get(className);
 			System.out.println("ClassName: " + className);
 			
-			/**
-			 * get all the annotations of the current class
-			 */
-			Object[] all = currentClass.getAnnotations();		
+			/*get all the annotations of the current class*/
+			Object[] classAnnotations = currentClass.getAnnotations();		
 			
-			/**
-			 * if there are annotations
-			 */
-			if (all.length>0){
+			/*if there are annotations*/
+			if (classAnnotations.length>0){
 				
-				/* get all the constructors of a class*/
-				CtConstructor[] listCons = currentClass.getDeclaredConstructors();	
+				/* get all the constructors of a class */
+				CtConstructor[] listConstructors = currentClass.getDeclaredConstructors();	
 				
 				/* robot management */
-				RobotManager rman = new RobotManager();
+				RobotManager robotManager = new RobotManager();
 				
-				/**
-				 * board management
-				 */
-				BoardManager bman = new BoardManager();
+				/* board management */
+				BoardManager boardManager = new BoardManager();
 				
-				/**
-				 * bool to check if there is a sensor when we are in the actuator
-				 */
-				boolean bool = false;
+				/* bool to check if there is a sensor when we are in the actuator */
+				boolean hasAlreadySensorOrActuator = false;
 				
-				for (int i=0; i<all.length; i++){
+				for (Object classAnnotation : classAnnotations){
 					
-					/**
-					 * initial management of the robot, if it has not yet been done
-					 */
-					if (all[i] instanceof WithSensors){
+					/*initial management of the robot, if it has not yet been done*/
+					if (classAnnotation instanceof WithSensors){
 						
-						bman.manageInitial(pool, currentClass);
-						
-						/**
-						 * initial management of the robot
-						 */
-						if (!bool){
-							rman.manageInitial(pool, currentClass, listCons);
+						/* initial management of the robot */
+						if (!hasAlreadySensorOrActuator){
+							robotManager.manageInitial(pool, currentClass, listConstructors);
 						}
 						
-						/**
-						 * create the class SensorDataSender
-						 */
-						SensorDataSenderJavassist sdsj = new SensorDataSenderJavassist();
-						sdsj.create(pool, currentClass);
+						/*create the class SensorDataSender*/
+						SensorDataSenderJavassist.create(pool, currentClass);
 
-						/**
-						 * read annotations on the methods and update the robot
-						 */ 
+						/*read annotations on the methods and update the robot*/
 						CtMethod[] methods;
 						methods=currentClass.getMethods();
-						Object[] alls;
-						for (int j=0; j<methods.length; j++){
-							alls=methods[j].getAnnotations();						
-							if (alls.length>0){
-								for (int k=0; k<alls.length; k++){			
-									rman.manageSensors(pool, currentClass, alls[k]);
-									bman.manageSensors(pool, currentClass, alls[k]);
+						Object[] methodAnnotations;
+						for (CtMethod method : methods){
+							methodAnnotations=method.getAnnotations();						
+							if (methodAnnotations.length>0){
+								for (Object methodAnnotation : methodAnnotations){			
+									robotManager.manageSensors(pool, currentClass, methodAnnotation);
 								}
 							}
 						}
 						
-						/**
-						 * final management of the sensors of the robot
-						 */					
-						rman.manageSensorsFinal(pool, currentClass, listCons);
+						/*final management of the sensors of the robot*/				
+						robotManager.manageSensorsFinal(pool, currentClass, listConstructors);
 						
-						/**
-						 * complete the class SensorDataSender
-						 */
-						sdsj.update(pool, currentClass, rman);
+						/*complete the class SensorDataSender*/
+						SensorDataSenderJavassist.update(pool, currentClass, robotManager);
 						
-						/**
-						 * a sensor has been found
-						 */
-						bool = true;
+						/*a sensor has been found*/
+						hasAlreadySensorOrActuator = true;
+						
 					}
 					
-					/**
-					 * if the current annotation is a actuator
-					 */
-					if (all[i] instanceof WithActuators){
+					/*if the current annotation is a actuator*/
+					if (classAnnotation instanceof WithActuators){
 						
-						/**
-						 * initial management of the robot, if it has not yet been done
-						 */
-						if (!bool){
-							rman.manageInitial(pool, currentClass, listCons);
+						
+						/* initial management of the board */
+						boardManager.manageActuatorsInitial(pool, currentClass);				
+			
+						/* initial management of the robot, if it has not yet been done*/
+						if (!hasAlreadySensorOrActuator){
+							robotManager.manageInitial(pool, currentClass, listConstructors);
 						}
 						
-
 						/* create class ActuatorDataReceptor */
-						ActuatorDataReceptorJavassist adrj = new ActuatorDataReceptorJavassist();
-						adrj.create(pool, currentClass);						
-						
+						ActuatorDataReceptorJavassist.create(pool, currentClass);											
 
 						/* read annotations on the methods and update the robot */
-						CtMethod[] methods;
-						methods=currentClass.getMethods();
-						Object[] alls;
-						for (int j=0; j<methods.length; j++){
-							alls=methods[j].getAnnotations();
-							if (alls.length>0){
-								for (int k=0; k<alls.length; k++){			
-									rman.manageActuators(pool, currentClass, alls[k]);
-									bman.manageActuators(pool, currentClass, alls[k]);
+						CtMethod[] methods = currentClass.getMethods();
+						Object[] methodAnnotations;
+						for (CtMethod method : methods){
+							methodAnnotations=method.getAnnotations();
+							if (methodAnnotations.length>0){
+								for (Object methodAnnotation : methodAnnotations){			
+									robotManager.manageActuators(pool, currentClass, methodAnnotation);
+									boardManager.manageActuatorsDataListenerDisplayController(pool, currentClass, methodAnnotation);
+									boardManager.manageActuatorsPanel(pool, currentClass, methodAnnotation);
 								}
 							}
 						}
 						
 
-						/* final management of the sensors of the robot */				
-						rman.manageSensorsFinal(pool, currentClass, listCons);
+						/* final management of the actuators of the robot */				
+						robotManager.manageActuatorsFinal(pool, currentClass, listConstructors);
 						
-						/**
-						 * complete the class SensorDataSender
-						 */
-						adrj.update(pool, currentClass);
+						/* final management of the actuators of the board */	
+						boardManager.manageFinal(pool, currentClass, classAnnotation);
 						
-						/**
-						 * an actuator has been found
-						 */
-						bool = true;
+						/* when the teleoperation board is created, the gui is updated */
+						PersonalizedGUIJavassist.update(pool, currentClass);
+						
+						/*complete the class ActuatorDataReceptor*/
+						ActuatorDataReceptorJavassist.update(pool, currentClass);
+						
+						/*an actuator has been found*/
+						hasAlreadySensorOrActuator = true;
+						
 					}
 				}
 			}
@@ -178,7 +153,7 @@ public class MakePublicTranslator implements Translator {
 
 	/**
 	 * start the translator
-	 * @param pool : the default classpool
+	 * @param pool the default classpool
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */

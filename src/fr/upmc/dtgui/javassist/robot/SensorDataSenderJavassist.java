@@ -29,7 +29,7 @@ public class SensorDataSenderJavassist {
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	public void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
+	public static void create(ClassPool pool, CtClass robot) throws RuntimeException, NotFoundException, CannotCompileException{
 		
 		/*class SensorDataSender*/
 		
@@ -124,7 +124,7 @@ public class SensorDataSenderJavassist {
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	public void update(ClassPool pool, CtClass robot, RobotManager rman) throws NotFoundException, CannotCompileException{
+	public static void update(ClassPool pool, CtClass robot, RobotManager rman) throws NotFoundException, CannotCompileException{
 		
 		/**
 		 * get class SensorDataSender

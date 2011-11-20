@@ -41,7 +41,7 @@ public class BoardManagerJunit extends TestCase {
 					alls=methods[j].getAnnotations();						
 					if (alls.length>0){
 						for (int k=0; k<alls.length; k++){			
-							bman.manageSensors(pool, littleRobot, alls[k]);
+							//bman.manageSensors(pool, littleRobot, alls[k]);
 						}
 					}
 				}

@@ -2,6 +2,8 @@ package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -10,81 +12,79 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+/**
+ * 
+ * @author Benoit GOEPFERT & Shiyue WANG
+ *
+ */
 public class SensorDataReceptorJavassist {
 
+	/**
+	 * the default constructor
+	 */
 	public SensorDataReceptorJavassist(){
 		
 	}
 	
-	public void create(ClassPool pool, CtClass board, Object ann) throws CannotCompileException, NotFoundException{
-		/**
-		 * class SensorDataReceptor
-		 */
-		CtClass sdr = board.makeNestedClass("SensorDataReceptor", true);
-		sdr.setSuperclass(pool.get("java.lang.Thread"));
-		sdr.addInterface(pool.get("fr.upmc.dtgui.gui.SensorDataReceptorInterface"));
+	/**
+	 * create the code of the nested class SensorDataSender excepted the method run
+	 * @param pool the classpool that contains all classes at the loading in Javassist
+	 * @param board the TeleoperationBoard associated to the current robot
+	 * @throws CannotCompileException
+	 * @throws NotFoundException
+	 */
+	public static void create(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{
+		
+		/* class SensorDataReceptor */
+		CtClass sensorDataReceptor = board.makeNestedClass("SensorDataReceptor", true);
+		sensorDataReceptor.setSuperclass(pool.get("java.lang.Thread"));
+		sensorDataReceptor.addInterface(pool.get("fr.upmc.dtgui.gui.SensorDataReceptorInterface"));
 
-		/**
-		 * add field
-		 */
-		CtField posd = new CtField(pool.get("fr.upmc.dtgui.gui.PositionDisplay"),"positionDisplay", sdr);
-		posd.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
-		sdr.addField(posd);
+		/* add field positionDisplay*/
+		CtField positionDisplay = new CtField(pool.get("fr.upmc.dtgui.gui.PositionDisplay"),"positionDisplay", sensorDataReceptor);
+		positionDisplay.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		sensorDataReceptor.addField(positionDisplay);
 
-		/**
-		 * add field
-		 */
-		CtField tb = new CtField(board,"tBoard", sdr);
-		tb.setModifiers(Modifier.PROTECTED);
-		sdr.addField(tb);
+		/* add field tBoard */
+		CtField tBoard = new CtField(board,"tBoard", sensorDataReceptor);
+		tBoard.setModifiers(Modifier.PROTECTED);
+		sensorDataReceptor.addField(tBoard);
 
-		/**
-		 * add field
-		 */
-		CtField dq = new CtField(pool.get("java.util.concurrent.BlockingQueue"),"dataQueue", sdr);
-		dq.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
-		sdr.addField(dq);
+		/* add field dataQueue */
+		CtField dataQueue = new CtField(pool.get("java.util.concurrent.BlockingQueue"),"dataQueue", sensorDataReceptor);
+		dataQueue.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
+		sensorDataReceptor.addField(dataQueue);
 
-		/**
-		 * add field
-		 */
-		CtField ax = new CtField(CtClass.intType,"absoluteX", sdr);
-		ax.setModifiers(Modifier.PROTECTED);
-		sdr.addField(ax);
+		/* add field absoluteX */
+		CtField absoluteX = new CtField(CtClass.intType,"absoluteX", sensorDataReceptor);
+		absoluteX.setModifiers(Modifier.PROTECTED);
+		sensorDataReceptor.addField(absoluteX);
 
-		/**
-		 * add field
-		 */
-		CtField ay = new CtField(CtClass.intType,"absoluteY", sdr);
-		ay.setModifiers(Modifier.PROTECTED);
-		sdr.addField(ay);
+		/* add field absoluteY */
+		CtField absoluteY = new CtField(CtClass.intType,"absoluteY", sensorDataReceptor);
+		absoluteY.setModifiers(Modifier.PROTECTED);
+		sensorDataReceptor.addField(absoluteY);
 
-		/**
-		 * add field
-		 */
-		CtField cr = new CtField(CtClass.intType,"controlRadius", sdr);
-		cr.setModifiers(Modifier.PROTECTED);
-		sdr.addField(cr);
+		/* add field controlRadius */
+		CtField controlRadius = new CtField(CtClass.intType,"controlRadius", sensorDataReceptor);
+		controlRadius.setModifiers(Modifier.PROTECTED);
+		sensorDataReceptor.addField(controlRadius);
 
-		/**
-		 * add field shouldContinue
-		 */
-		CtField sc = new CtField(CtClass.booleanType,"shouldContinue", sdr);
-		sc.setModifiers(Modifier.PROTECTED);
-		sdr.addField(sc);
+		/* add field shouldContinue*/
+		CtField shouldContinue = new CtField(CtClass.booleanType,"shouldContinue", sensorDataReceptor);
+		shouldContinue.setModifiers(Modifier.PROTECTED);
+		sensorDataReceptor.addField(shouldContinue);
 
-		/**
-		 * add constructor
-		 */
-		CtClass[] args_sdr = new CtClass[]{
+		/* add constructor */
+		CtClass[] argsConstructorSensorDataReceptor = new CtClass[]{
 				pool.get("fr.upmc.dtgui.gui.PositionDisplay"),
 				pool.get("java.util.concurrent.BlockingQueue"),
 				CtClass.intType,
 				CtClass.intType,
 				CtClass.intType
 		};
-		CtConstructor cons_sdr = new CtConstructor(args_sdr, sdr);
-		cons_sdr.setBody(
+		CtConstructor constructorSensorDataReceptor = new CtConstructor(argsConstructorSensorDataReceptor, sensorDataReceptor);
+		constructorSensorDataReceptor.setBody(
 				"{\n" +
 						"super();" +
 						"$0.positionDisplay = $1;" +
@@ -93,94 +93,104 @@ public class SensorDataReceptorJavassist {
 						"$0.absoluteY = $4 ;" +
 						"$0.controlRadius = $5 ;" +			
 				"}");
-		sdr.addConstructor(cons_sdr);
+		sensorDataReceptor.addConstructor(constructorSensorDataReceptor);
 
-		CtMethod cut = new CtMethod(CtClass.voidType,"cutoff", new CtClass[]{}, sdr);
-		cut.setBody(
+		/* add method cutOff */
+		CtMethod cutoff = new CtMethod(CtClass.voidType,"cutoff", new CtClass[]{}, sensorDataReceptor);
+		cutoff.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+		cutoff.setBody(
 				"{" +
 						"this.shouldContinue = false;" +
 				"}");
-		cut.setModifiers(Modifier.SYNCHRONIZED);
-		sdr.addMethod(cut);
+		sensorDataReceptor.addMethod(cutoff);
 
-		CtMethod sb = new CtMethod(CtClass.voidType,"cutoff", new CtClass[]{pool.get("fr.upmc.dtgui.gui.RobotTeleoperationBoard")}, sdr);
-		sb.setBody(
+		/* add method setTBoard */
+		CtMethod setTBoard = new CtMethod(CtClass.voidType,"setTBoard", new CtClass[]{pool.get("fr.upmc.dtgui.gui.RobotTeleoperationBoard")}, sensorDataReceptor);
+		setTBoard.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
+		setTBoard.setBody(
 				"{" +
 						"$0.tBoard = (" + board.getName() + ") $1 ;" +
 				"}");
-		sb.setModifiers(Modifier.SYNCHRONIZED);
-		sdr.addMethod(sb);
+		sensorDataReceptor.addMethod(setTBoard);
 
-		CtMethod start = new CtMethod(CtClass.voidType,"start", new CtClass[]{}, sdr);
+		/* add method start */
+		CtMethod start = new CtMethod(CtClass.voidType,"start", new CtClass[]{}, sensorDataReceptor);
+		start.setModifiers(Modifier.SYNCHRONIZED | Modifier.PUBLIC);
 		start.setBody(
 				"{" +
 						"this.shouldContinue = true ;" +
 						"super.start();" +
 				"}");
-		start.setModifiers(Modifier.SYNCHRONIZED);
-		sdr.addMethod(start);			
+		sensorDataReceptor.addMethod(start);			
 
-		//class myrunnable
+	}
+	
+	/**
+	 * add the method run in the class SensorDataSender
+	 * @param pool the classpool that contains all classes at the loading in Javassist
+	 * @param board the TeleoperationBoard associated to the current robot
+	 * @throws CannotCompileException
+	 * @throws NotFoundException
+	 */
+	public static void update(ClassPool pool, CtClass board) throws CannotCompileException, NotFoundException{	
+	
+		CtClass sensorDataReceptor = pool.get(board.getName() + "$SensorDataReceptor");
 		
-		CtClass runnable = board.makeNestedClass("MyRunnable", true);
-		runnable.addInterface(pool.get("java.lang.Runnable"));
+		/*add nested class MyRunnable1 */		
+		CtClass runnable1 = board.makeNestedClass("MyRunnable1", true);
+		runnable1.addInterface(pool.get("java.lang.Runnable"));
 		
-		CtField posd_r = new CtField(pool.get("fr.upmc.dtgui.robot.PositioningData"),"pd", runnable);
-		posd_r.setModifiers(Modifier.FINAL);
-		runnable.addField(posd_r);
+		/* add field pd*/
+		CtField pd = new CtField(pool.get("fr.upmc.dtgui.robot.PositioningData"),"pd", runnable1);
+		pd.setModifiers(Modifier.FINAL);
+		runnable1.addField(pd);		
 		
-		CtField posdisp = new CtField(pool.get("fr.upmc.dtgui.gui.PositionDisplay"),"positionDisplay", runnable);
-		posdisp.setModifiers(Modifier.FINAL | Modifier.PROTECTED);
-		runnable.addField(posdisp);			
-		
-		CtConstructor cons_runnable = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.PositioningData"), pool.get("fr.upmc.dtgui.gui.PositionDisplay")},runnable);
-		cons_runnable.setBody(
+		/* add constructor */
+		CtConstructor constructorRunnable1 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.PositioningData")},runnable1);
+		constructorRunnable1.setBody(
 				"{" +
 						"$0.pd = $1;" +
-						"$0.positionDisplay = $2;" +
 				"}");
-		runnable.addConstructor(cons_runnable);
+		runnable1.addConstructor(constructorRunnable1);
 		
-		
-		CtMethod myrun = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable);
-		myrun.setBody(
+		/* add method run */
+		CtMethod runMyRunnable1 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable1);
+		runMyRunnable1.setBody(
 				"{" +
-						"$0.positionDisplay.draw(pd) ;" +
+						sensorDataReceptor.getName()+".$0.positionDisplay.draw(pd) ;" +
 				"}");
-		runnable.addMethod(myrun);
+		runnable1.addMethod(runMyRunnable1);
 		
-		//class myrunnable2
-		
-		CtClass runnable2 = board.makeNestedClass("MyRunnable2", true);
+		/*create nested class myrunnable2*/	
+		CtClass runnable2 = sensorDataReceptor.makeNestedClass("MyRunnable2", true);
 		runnable2.addInterface(pool.get("java.lang.Runnable"));	
 		
-		CtField tbo = new CtField(board,"tBoard", runnable2);
-		tbo.setModifiers(Modifier.PROTECTED);
-		runnable2.addField(tbo);
-		
+		/* add field rsd1 */
 		CtField rsd1 = new CtField(pool.get("fr.upmc.dtgui.robot.RobotStateData"),"rsd1", runnable2);
 		rsd1.setModifiers(Modifier.PROTECTED);
 		runnable2.addField(rsd1);
 		
-		CtConstructor cons_runnable2 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.RobotStateData"), board},runnable2);
-		cons_runnable2.setBody(
+		/* add constructor */
+		CtConstructor constructorRunnable2 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.RobotStateData"), board},runnable2);
+		constructorRunnable2.setBody(
 				"{" +
-						"$0.tBoard = $2;" +
-						"$0.rsd1 = $1;" +
+						"$0.rsd1 = $1;" +		
 				"}");
-		runnable2.addConstructor(cons_runnable2);
+		runnable2.addConstructor(constructorRunnable2);
 		
-		CtMethod myrun2 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable2);
-		myrun2.setBody(
+		/* create method run */
+		CtMethod runMyRunnable2 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable2);
+		runMyRunnable2.setBody(
 				"{" +
 						"if ($0.tBoard != null) {" +
-							"$0.tBoard.processSensorData(rsd1) ;" +
+							sensorDataReceptor.getName()+".$0.tBoard.processSensorData(rsd1) ;" +
 						"}" +
 				"}");
-		runnable2.addMethod(myrun2);
+		runnable2.addMethod(runMyRunnable2);
 		
-		CtMethod run_sdr = new CtMethod(CtClass.voidType,"run", new CtClass[]{}, sdr);
-		run_sdr.setBody(
+		/* add the method run*/
+		CtMethod runSensorDataReceptor = new CtMethod(CtClass.voidType,"run", new CtClass[]{}, sensorDataReceptor);
+		runSensorDataReceptor.setBody(
 				"{" +
 						"fr.upmc.dtgui.robot.RobotStateData rsd = null ;" +
 						"Vector current = new Vector(4) ;" +
@@ -197,14 +207,14 @@ public class SensorDataReceptorJavassist {
 								"try {" +
 									"if (rsd instanceof fr.upmc.dtgui.robot.PositioningData) {" +
 										"final fr.upmc.dtgui.robot.PositioningData pd = (fr.upmc.dtgui.robot.PositioningData) rsd ;" +
-										"$0.MyRunnable runnable = new $0.MyRunnable(pd, positionDisplay);"+
-										"SwingUtilities.invokeAndWait(runnable) ;" +
+										"$0.MyRunnable1 runnable1 = new $0.MyRunnable1(pd);"+
+										"SwingUtilities.invokeAndWait(runnable1) ;" +
 									"} " +
 									"else {" +
 										"if ($0.tBoard != null) {" +
 											"final fr.upmc.dtgui.robot.RobotStateData rsd1 = rsd ;" +
-											"$0.MyRunnable2 runnable2 = new $0.MyRunnable2(rsd1, tBoard);"+
-											"SwingUtilities.invokeAndWait(runnable2 ) ;" +
+											"$0.MyRunnable2 runnable2 = new $0.MyRunnable2(rsd1);"+
+											"SwingUtilities.invokeAndWait(runnable2) ;" +
 										"}" +
 									"}" +
 								"} catch (InterruptedException e) {" +
@@ -216,7 +226,7 @@ public class SensorDataReceptorJavassist {
 							"current.clear() ;" +
 						"}" +
 				"}");
-		sdr.addMethod(run_sdr);
+		sensorDataReceptor.addMethod(runSensorDataReceptor);
 	}
 	
 }

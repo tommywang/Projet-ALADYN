@@ -2,6 +2,8 @@ package fr.upmc.dtgui.javassist.board;
 
 import java.lang.reflect.Modifier;
 
+import fr.upmc.dtgui.annotations.BooleanActuatorData;
+import fr.upmc.dtgui.annotations.IntegerActuatorData;
 import fr.upmc.dtgui.annotations.RealActuatorData;
 
 import javassist.CannotCompileException;
@@ -12,6 +14,11 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+/**
+ * 
+ * @author Benoit GOEPFERT & Shiyue WANG
+ *
+ */
 public class SteeringControllerPanelJavassist {
 	/**
 	 * default constructor
@@ -28,90 +35,99 @@ public class SteeringControllerPanelJavassist {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public void create(ClassPool pool, CtClass robot, CtClass board, RealActuatorData annot) throws CannotCompileException, NotFoundException{	
-		/**
-		 * create class SteeringControllerPanel
-		 */
-		CtClass scp=board.makeNestedClass("SteeringControllerPanel", true);
-		scp.setSuperclass(pool.get("javax.swing.JPanel"));
+	public static void create(ClassPool pool, CtClass robot, CtClass board, Object annotation) throws CannotCompileException, NotFoundException{	
+		
+		/* create class SteeringControllerPanel*/
+		CtClass steeringControllerPanel=board.makeNestedClass("SteeringControllerPanel", true);
+		steeringControllerPanel.setSuperclass(pool.get("javax.swing.JPanel"));
 
-		/**
-		 * @serialField serialVersionUID
-		 */
-		CtField svUID = new CtField(CtClass.longType, "serialVersionUID", scp);
-		svUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-		scp.addField(svUID,CtField.Initializer.constant(1L));
+		/*add field serialVersionUID*/
+		CtField serialVersionUID = new CtField(CtClass.longType, "serialVersionUID", steeringControllerPanel);
+		serialVersionUID.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
+		steeringControllerPanel.addField(serialVersionUID,CtField.Initializer.constant(1L));
 
-		/**
-		 * add field lr
-		 */
-		CtField lr = new CtField(pool.get("fr.upmc.dtgui.robot.Robot"),"lr", scp);
+		/*add field lr*/
+		CtField lr = new CtField(pool.get("fr.upmc.dtgui.robot.Robot"),"lr", steeringControllerPanel);
 		robot.setModifiers(Modifier.PROTECTED);
-		scp.addField(lr);
+		steeringControllerPanel.addField(lr);
 
-		/**
-		 * add field steeringLabelPanel
-		 */
-		CtField stlp = new CtField(pool.get("javax.swing.JPanel"),"steeringLabelPanel", scp);
-		stlp.setModifiers(Modifier.PROTECTED);
-		scp.addField(stlp);
+		/* add field steeringLabelPanel*/
+		CtField steeringLabelPanel = new CtField(pool.get("javax.swing.JPanel"),"steeringLabelPanel", steeringControllerPanel);
+		steeringLabelPanel.setModifiers(Modifier.PROTECTED);
+		steeringControllerPanel.addField(steeringLabelPanel);
 
-		/**
-		 * add field steeringSliderPanel
-		 */
-		CtField stsp = new CtField(pool.get("javax.swing.JPanel"),"steeringSliderPanel", scp);
-		stsp.setModifiers(Modifier.PROTECTED);
-		scp.addField(stsp);
+		/*add field steeringSliderPanel*/
+		CtField steeringSliderPanel = new CtField(pool.get("javax.swing.JPanel"),"steeringSliderPanel", steeringControllerPanel);
+		steeringSliderPanel.setModifiers(Modifier.PROTECTED);
+		steeringControllerPanel.addField(steeringSliderPanel);
 
-		/**
-		 * add field steeringSlider
-		 */
-		CtField ss = new CtField(pool.get("javax.swing.JSlider"),"speedSlider", scp);
-		ss.setModifiers(Modifier.PROTECTED);
-		scp.addField(ss);
+		/*add field steeringSlider*/
+		CtField steeringSlider = new CtField(pool.get("javax.swing.JSlider"),"steeringSlider", steeringControllerPanel);
+		steeringSlider.setModifiers(Modifier.PROTECTED);
+		steeringControllerPanel.addField(steeringSlider);
 
-		/**
-		 * add constructor
-		 */
-		CtConstructor cons_scp = new CtConstructor(new CtClass[]{}, scp);
-		cons_scp.setBody(
+		/*code to add in the constructor depending on the annotation type*/
+		String body1 = "", body2 = "";
+		if (annotation instanceof RealActuatorData){
+			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+			body1 = "(int)" + annotationRealActuatorData.dataRange().inf() + "," +
+					"(int)" + annotationRealActuatorData.dataRange().sup();
+			body2 = annotationRealActuatorData.unit().name();
+		}
+		if (annotation instanceof IntegerActuatorData){
+			IntegerActuatorData annotationIntegerActuatorData = (IntegerActuatorData)annotation;
+			body1 = annotationIntegerActuatorData.dataRange().inf() + "," + annotationIntegerActuatorData.dataRange().sup();
+			body2 = annotationIntegerActuatorData.unit().name();
+		}
+		if (annotation instanceof BooleanActuatorData){
+			body1 = "0 , 1";
+			body2 = "  ";
+		}
+		
+		/*add constructor*/
+		CtConstructor constructorSteeringControllerPanel = new CtConstructor(new CtClass[]{}, steeringControllerPanel);
+		constructorSteeringControllerPanel.setBody(
 				"{" +
 						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 125) ;" +
-						"JLabel steeringLabel = new javax.swing.JLabel(\"Speed control (" + annot.unit().name() + ")\") ;" +
+						"javax.swing.JLabel steeringLabel = new javax.swing.JLabel(\"Speed control (" + body2 + ")\") ;" +
 						"steeringLabelPanel = new javax.swing.JPanel() ;" +
-						"steeringLabelPanel.add(speedLabel) ;" +
+						"steeringLabelPanel.add(steeringLabel) ;" +
 						"this.add(steeringLabelPanel, java.awt.BorderLayout.SOUTH) ;" +
-						"DefaultBoundedRangeModel steeringModel =" +
-						"new DefaultBoundedRangeModel(0, 0, " + annot.dataRange().inf() + "," + annot.dataRange().sup() +") ;" +
-						"steeringSlider = new JSlider(steeringModel) ;" +
+						"javax.swing.DefaultBoundedRangeModel steeringModel =" +
+						"new javax.swing.DefaultBoundedRangeModel(0, 0, " + body1 +") ;" +
+						"steeringSlider = new javax.swing.JSlider(steeringModel) ;" +
 						"steeringSlider.setMajorTickSpacing(5);" +
 						"steeringSlider.setMinorTickSpacing(1);" +
 						"steeringSlider.setPaintTicks(true);" +
 						"steeringSlider.setPaintLabels(true);" +
-						"steeringSliderPanel = new JPanel() ;" +
-						"steeringSliderPanel.add(speedSlider) ;" +
+						"steeringSliderPanel = new javax.swing.JPanel() ;" +
+						"steeringSliderPanel.add(steeringSlider) ;" +
 						"this.add(steeringSliderPanel, java.awt.BorderLayout.NORTH) ;" +
-						"this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4)) ;" +
+						"this.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 4)) ;" +
 						"this.setVisible(true) ;" +
 				"}");
 
-		CtMethod dr = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, scp);
-		dr.setBody(
+		/* add method disconnectRobot */
+		CtMethod disconnectRobot = new CtMethod(CtClass.voidType,"disconnectRobot", new CtClass[]{}, steeringControllerPanel);
+		disconnectRobot.setModifiers(Modifier.PUBLIC);
+		disconnectRobot.setBody(
 				"{" +
-						"$0.speedSlider.addChangeListener(null) ;" +
+						"$0.steeringSlider.addChangeListener(null) ;" +
 						"$0.lr = null ;" +
 				"}");
-		scp.addMethod(dr);
+		steeringControllerPanel.addMethod(disconnectRobot);
 
-		CtMethod cr = new CtMethod(CtClass.voidType,"connectRobot", new CtClass[]{pool.get("fr.umpc.dtgui.robot.InstrumentedRobot")}, scp);
-		cr.setBody(
+		/* add method connectRobot */
+		CtMethod connectRobot = new CtMethod(CtClass.voidType,"connectRobot", new CtClass[]{pool.get("fr.upmc.dtgui.robot.InstrumentedRobot")}, steeringControllerPanel);
+		connectRobot.setModifiers(Modifier.PUBLIC);
+		connectRobot.setBody(
 				"{" +				
 						"$0.lr = $1 ;" +
 						"$0.steeringSlider.addChangeListener(" +
 						"new " + board.getName() + "$SteeringActuatorDataListener($1.getActuatorDataQueue())) ;" +
 				"}");
-		scp.addMethod(cr);
+		steeringControllerPanel.addMethod(connectRobot);
 	}
 	
 	/**

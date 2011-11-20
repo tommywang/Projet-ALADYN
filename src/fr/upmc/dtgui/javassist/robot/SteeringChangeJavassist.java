@@ -9,7 +9,7 @@ public class SteeringChangeJavassist {
 	public SteeringChangeJavassist(){
 	}
 	
-	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
+	public static void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 
 		//create class
 		CtClass stc = robot.makeNestedClass("SteeringChange", true);

@@ -1,10 +1,16 @@
 package fr.upmc.dtgui.junit.board;
 
+import java.lang.reflect.Modifier;
+
+import fr.upmc.dtgui.annotations.MeasurementUnit;
+import fr.upmc.dtgui.annotations.RealActuatorData;
+import fr.upmc.dtgui.annotations.RealRange;
+
 import org.junit.Test;
 import junit.framework.TestCase;
 import javassist.ClassPool;
 import javassist.CtClass;
-import fr.upmc.dtgui.javassist.board.SteeringPanelJavassist;
+import fr.upmc.dtgui.javassist.board.SpeedDisplayPanelJavassist;
 
 
 public class BoardSteeringPanelTest extends TestCase {
@@ -12,9 +18,23 @@ public class BoardSteeringPanelTest extends TestCase {
 	public void setUp() throws Exception {
 		pool = ClassPool.getDefault();
 		littleRobot=pool.get("fr.upmc.dtgui.tests.LittleRobot");
-		littleRobotBoard=pool.get("fr.upmc.dtgui.tests.RobotTeleoperationBoard");
-		SteeringPanelJavassist sp=new SteeringPanelJavassist();
-		sp.create(pool, littleRobot, littleRobotBoard);
+		//littleRobotBoard=pool.get("fr.upmc.dtgui.tests.RobotTeleoperationBoard");
+		
+		littleRobotBoard=pool.makeClass(littleRobot.getName()+"TeleoperationBoard");
+		littleRobotBoard.setModifiers(Modifier.PUBLIC);
+		littleRobotBoard.setSuperclass(pool.get("javax.swing.JPanel"));
+		littleRobotBoard.addInterface(pool.get("fr.upmc.dtgui.gui.RobotTeleoperationBoard"));
+		SpeedDisplayPanelJavassist sp=new SpeedDisplayPanelJavassist();
+		System.out.println(littleRobot.getMethods()[0].getAnnotations()[0]);
+		Object o=@RealActuatorData(
+				groupName = "steering", 
+				unit = @MeasurementUnit(name = "degrees"),
+				dataRange = @RealRange(inf = -15.0, sup = 15.0),
+				maxWritingRate = 10.0,
+				minWritingRate = 0.0
+				);
+//		SpeedDisplayPanelJavassist.create(pool, littleRobot, littleRobotBoard,(RealActuatorData)o);
+		
 	}
 
 	private CtClass littleRobot;

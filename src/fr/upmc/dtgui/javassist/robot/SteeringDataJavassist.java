@@ -11,7 +11,7 @@ public class SteeringDataJavassist {
 	}
 	
 	/** initial creation of the class EnergyData and associated elements in the robot */
-	public void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
+	public static void create(ClassPool pool, CtClass robot) throws CannotCompileException, RuntimeException, NotFoundException{
 		
 		/** add class SteeringData */
 
