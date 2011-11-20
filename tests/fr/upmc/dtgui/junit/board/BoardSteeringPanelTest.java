@@ -26,13 +26,7 @@ public class BoardSteeringPanelTest extends TestCase {
 		littleRobotBoard.addInterface(pool.get("fr.upmc.dtgui.gui.RobotTeleoperationBoard"));
 		SpeedDisplayPanelJavassist sp=new SpeedDisplayPanelJavassist();
 		System.out.println(littleRobot.getMethods()[0].getAnnotations()[0]);
-		Object o=@RealActuatorData(
-				groupName = "steering", 
-				unit = @MeasurementUnit(name = "degrees"),
-				dataRange = @RealRange(inf = -15.0, sup = 15.0),
-				maxWritingRate = 10.0,
-				minWritingRate = 0.0
-				);
+		
 //		SpeedDisplayPanelJavassist.create(pool, littleRobot, littleRobotBoard,(RealActuatorData)o);
 		
 	}

@@ -137,15 +137,18 @@ public class SensorDataReceptorJavassist {
 		CtClass sensorDataReceptor = pool.get(board.getName() + "$SensorDataReceptor");
 		
 		/*add nested class MyRunnable1 */		
-		CtClass runnable1 = board.makeNestedClass("MyRunnable1", true);
+		//CtClass runnable1 = board.ma("MyRunnable1", true);
+		CtClass runnable1 = pool.makeClass("MyRunnable1");
 		runnable1.addInterface(pool.get("java.lang.Runnable"));
 		
 		/* add field pd*/
+		
 		CtField pd = new CtField(pool.get("fr.upmc.dtgui.robot.PositioningData"),"pd", runnable1);
 		pd.setModifiers(Modifier.FINAL);
 		runnable1.addField(pd);		
 		
 		/* add constructor */
+		
 		CtConstructor constructorRunnable1 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.PositioningData")},runnable1);
 		constructorRunnable1.setBody(
 				"{" +
@@ -157,12 +160,14 @@ public class SensorDataReceptorJavassist {
 		CtMethod runMyRunnable1 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable1);
 		runMyRunnable1.setBody(
 				"{" +
-						sensorDataReceptor.getName()+".$0.positionDisplay.draw(pd) ;" +
+						sensorDataReceptor.getName()+".positionDisplay.draw($0.pd) ;" +
 				"}");
 		runnable1.addMethod(runMyRunnable1);
+		runnable1.toClass();
 		
 		/*create nested class myrunnable2*/	
-		CtClass runnable2 = sensorDataReceptor.makeNestedClass("MyRunnable2", true);
+		CtClass runnable2 = pool.makeClass("MyRunnable2");
+		//CtClass runnable2 = sensorDataReceptor.makeNestedClass("MyRunnable2", true);
 		runnable2.addInterface(pool.get("java.lang.Runnable"));	
 		
 		/* add field rsd1 */
@@ -170,11 +175,17 @@ public class SensorDataReceptorJavassist {
 		rsd1.setModifiers(Modifier.PROTECTED);
 		runnable2.addField(rsd1);
 		
+		/* add field tBoard */
+		CtField tBoard = new CtField(pool.get("fr.upmc.dtgui.gui.RobotTeleoperationBoard"),"tBoard", runnable2);
+		tBoard.setModifiers(Modifier.PROTECTED);
+		runnable2.addField(tBoard);
+		
 		/* add constructor */
 		CtConstructor constructorRunnable2 = new CtConstructor(new CtClass[]{pool.get("fr.upmc.dtgui.robot.RobotStateData"), board},runnable2);
 		constructorRunnable2.setBody(
 				"{" +
-						"$0.rsd1 = $1;" +		
+						"$0.rsd1 = $1;" +	
+						"$0.tBoard=$2;"+
 				"}");
 		runnable2.addConstructor(constructorRunnable2);
 		
@@ -182,8 +193,8 @@ public class SensorDataReceptorJavassist {
 		CtMethod runMyRunnable2 = new CtMethod(CtClass.voidType, "run", new CtClass[]{}, runnable2);
 		runMyRunnable2.setBody(
 				"{" +
-						"if ($0.tBoard != null) {" +
-							sensorDataReceptor.getName()+".$0.tBoard.processSensorData(rsd1) ;" +
+						"if ("+sensorDataReceptor.getName()+".tBoard != null) {" +
+							sensorDataReceptor.getName()+".tBoard.processSensorData(rsd1) ;" +
 						"}" +
 				"}");
 		runnable2.addMethod(runMyRunnable2);
@@ -193,7 +204,7 @@ public class SensorDataReceptorJavassist {
 		runSensorDataReceptor.setBody(
 				"{" +
 						"fr.upmc.dtgui.robot.RobotStateData rsd = null ;" +
-						"Vector current = new Vector(4) ;" +
+						"java.util.Vector current = new java.util.Vector(4) ;" +
 						"while ($0.shouldContinue) {" +
 							"try {" +
 								"rsd = $0.dataQueue.take() ;" +
@@ -207,19 +218,19 @@ public class SensorDataReceptorJavassist {
 								"try {" +
 									"if (rsd instanceof fr.upmc.dtgui.robot.PositioningData) {" +
 										"final fr.upmc.dtgui.robot.PositioningData pd = (fr.upmc.dtgui.robot.PositioningData) rsd ;" +
-										"$0.MyRunnable1 runnable1 = new $0.MyRunnable1(pd);"+
-										"SwingUtilities.invokeAndWait(runnable1) ;" +
+										runnable1.getName()+" runnable1 = new MyRunnable1(pd);"+
+										"javax.swing.SwingUtilities.invokeAndWait(runnable1) ;" +
 									"} " +
 									"else {" +
 										"if ($0.tBoard != null) {" +
 											"final fr.upmc.dtgui.robot.RobotStateData rsd1 = rsd ;" +
-											"$0.MyRunnable2 runnable2 = new $0.MyRunnable2(rsd1);"+
-											"SwingUtilities.invokeAndWait(runnable2) ;" +
+											runnable2.getName()+" runnable2 = new MyRunnable2(rsd1,$0.tBoard);"+
+											"javax.swing.SwingUtilities.invokeAndWait(runnable2) ;" +
 										"}" +
 									"}" +
-								"} catch (InterruptedException e) {" +
+								"} catch (java.lang.InterruptedException e) {" +
 									"e.printStackTrace();" +
-								"} catch (InvocationTargetException e) {" +
+								"} catch (java.lang.reflect.InvocationTargetException e) {" +
 									"e.printStackTrace();" +
 								"}" +
 							"}" +

@@ -327,7 +327,7 @@ public class BoardManager {
 				"{" +
 					"super() ;" +
 					"$0.tgui = tgui ;" +
-					"$0.setSize(size, 250) ;" +
+					"$0.setSize(50, 250) ;" +
 					"$0.setLayout(new javax.swing.BoxLayout($0, javax.swing.BoxLayout.X_AXIS)) ;" +
 					"$0.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 2)) ;" +
 					"$0.ecv = new " + board.getName() + "$EnergyPanel() ;" +
@@ -413,17 +413,17 @@ public class BoardManager {
 		processSensorData.setModifiers(Modifier.PUBLIC);
 		processSensorData.setBody(
 				"{" +
-						"if (rsd instanceof fr.upmc.dtgui.robot.PositioningData) {" +
-							"$0.tgui.getPositionDisplay().draw((fr.upmc.dtgui.robot.PositioningData) rsd) ;" +
+						"if ($1 instanceof fr.upmc.dtgui.robot.PositioningData) {" +
+							"$0.tgui.getPositionDisplay().draw((fr.upmc.dtgui.robot.PositioningData) $1) ;" +
 						"} " +
-						"else if (rsd instanceof "+ currentRobot.getName() + "$EnergyData) {" +
-							"$0.updateEnergy(("+ currentRobot.getName() + "$EnergyData) rsd) ;" +
+						"else if ($1 instanceof "+ currentRobot.getName() + "$EnergyData) {" +
+							"$0.updateEnergy(("+ currentRobot.getName() + "$EnergyData) $1) ;" +
 						"} " +
-						"else if (rsd instanceof "+ currentRobot.getName() + "$SpeedData) {" +
-							"$0.updateSpeed(("+ currentRobot.getName() + "$SpeedData) rsd) ;" +
+						"else if ($1 instanceof "+ currentRobot.getName() + "$SpeedData) {" +
+							"$0.updateSpeed(("+ currentRobot.getName() + "$SpeedData) $1) ;" +
 						"} " +
-						"else if (rsd instanceof "+ currentRobot.getName() + "$SteeringData) {" +
-							"$0.updateSteeringAngle(("+ currentRobot.getName() + "$SteeringData) rsd) ;" +
+						"else if ($1 instanceof "+ currentRobot.getName() + "$SteeringData) {" +
+							"$0.updateSteeringAngle(("+ currentRobot.getName() + "$SteeringData) $1) ;" +
 						"}"	+					
 				"}");
 		board.addMethod(processSensorData);		

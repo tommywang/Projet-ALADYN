@@ -65,8 +65,8 @@ public class EnergyPanelJavassist {
 		
 		/*code to add in the constructor depending on the annotation type*/
 		String body1 = "";
-		if (annotation instanceof RealActuatorData){
-			RealActuatorData annotationRealActuatorData = (RealActuatorData)annotation;
+		if (annotation instanceof RealSensorData){
+			RealSensorData annotationRealActuatorData = (RealSensorData)annotation;
 			body1 = "(int)" + annotationRealActuatorData.dataRange().inf() + "," +
 					"(int)" + annotationRealActuatorData.dataRange().sup();
 		}
@@ -83,8 +83,8 @@ public class EnergyPanelJavassist {
 		constructorEnergyPanel.setBody(
 				"{\n" +
 						"$0.setSize(50, 250) ;" +
-						"$0.setLayout(new javax.swing.BoxLayout.BoxLayout($0, BoxLayout.Y_AXIS)) ;" +
-						"$0.energyModel = new javax.swing.DefaultBoundedRangeModel.DefaultBoundedRangeModel(" +
+						"$0.setLayout(new javax.swing.BoxLayout($0, javax.swing.BoxLayout.Y_AXIS)) ;" +
+						"$0.energyModel = new javax.swing.DefaultBoundedRangeModel(" +
 								"0, 0, " + body1 + ") ;" +
 						"javax.swing.JSlider energySlider = new javax.swing.JSlider(energyModel) ;" +
 						"energySlider.setOrientation(javax.swing.JSlider.VERTICAL) ;" +
@@ -97,10 +97,10 @@ public class EnergyPanelJavassist {
 						"$0.add(jpEnergySlider) ;" +
 						"javax.swing.JLabel ecvLabel = new javax.swing.JLabel(\"Remaining energy\") ;" +
 						"jpEcvLabel = new javax.swing.JPanel() ;" +
-						"jpEcvLabel.setLayout(new java.awt.BorderLayout.BorderLayout()) ;" +
-						"jpEcvLabel.add(ecvLabel, java.awt.BorderLayout.BorderLayout.NORTH) ;" +
+						"jpEcvLabel.setLayout(new java.awt.BorderLayout()) ;" +
+						"jpEcvLabel.add(ecvLabel, java.awt.BorderLayout.NORTH) ;" +
 						"$0.add(jpEcvLabel) ;" +
-						"$0.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK, 4)) ;" +
+						"$0.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 4)) ;" +
 						"$0.setVisible(true);\n" +
 				"}");
 		energyPanel.addConstructor(constructorEnergyPanel);
@@ -109,9 +109,9 @@ public class EnergyPanelJavassist {
 		CtMethod setVisible = new CtMethod(CtClass.voidType,"setVisible", new CtClass[]{CtClass.booleanType},energyPanel);
 		setVisible.setBody(
 				"{" +
-					"super.setVisible(aFlag);" +
-					"$0.jpEnergySlider.setVisible(aFlag) ;" +
-					"$0.jpEcvLabel.setVisible(aFlag) ;" +
+					"super.setVisible($1);" +
+					"$0.jpEnergySlider.setVisible($1) ;" +
+					"$0.jpEcvLabel.setVisible($1) ;" +
 				"}");
 		energyPanel.addMethod(setVisible);
 		
