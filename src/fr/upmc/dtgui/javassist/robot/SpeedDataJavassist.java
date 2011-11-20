@@ -38,7 +38,7 @@ public class SpeedDataJavassist {
 		
 		/** add methods in the robot */
 		
-		//add method getEnergyData
+		//add method getSpeedData
 		CtMethod gspd = new CtMethod(spd,"getSpeedData",new CtClass[]{}, robot);
 		gspd.setBody(
 				"{\n" +
@@ -46,7 +46,6 @@ public class SpeedDataJavassist {
 				"}\n");
 		gspd.setModifiers(Modifier.SYNCHRONIZED);
 		robot.addMethod(gspd);
-		
 		spd.toClass();
 	}
 }
