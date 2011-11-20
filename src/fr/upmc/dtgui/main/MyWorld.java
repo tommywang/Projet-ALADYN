@@ -49,7 +49,7 @@ public class MyWorld extends Thread {
 		this.instrumentedRobots[0] =
 			(InstrumentedRobot)new LittleRobot("No 5", 1000.0, 1100.0, 45.0) ;
 		this.instrumentedRobots[1] =
-				(InstrumentedRobot)new LittleRobot("No 1", 1000.0, 1100.0, 45.0) ;
+				(InstrumentedRobot)new AnotherLittleRobot("No 1", 1500.0, 1100.0, 135.0,20.0) ;
 		this.teleoperationStations[0] =
 			new PersonalizedGUI("1", 1200, 1500, 350, 350, 250, 700, 700) ;
 		this.teleoperationStations[1] =

@@ -135,7 +135,7 @@ public class SensorDataReceptorJavassist {
 		
 		/*add nested class MyRunnable1 */		
 		//CtClass runnable1 = board.ma("MyRunnable1", true);
-		CtClass runnable1 = pool.makeClass("MyRunnable1");
+		CtClass runnable1 = board.makeNestedClass("MyRunnable1",true);
 		runnable1.addInterface(pool.get("java.lang.Runnable"));
 		
 		/* add field pd*/
@@ -169,7 +169,7 @@ public class SensorDataReceptorJavassist {
 		runnable1.toClass();
 		
 		/*create nested class myrunnable2*/	
-		CtClass runnable2 = pool.makeClass("MyRunnable2");
+		CtClass runnable2 = board.makeNestedClass("MyRunnable2",true);
 		//CtClass runnable2 = sensorDataReceptor.makeNestedClass("MyRunnable2", true);
 		runnable2.addInterface(pool.get("java.lang.Runnable"));	
 		
@@ -223,13 +223,13 @@ public class SensorDataReceptorJavassist {
 								"try {" +
 									"if (rsd instanceof fr.upmc.dtgui.robot.PositioningData) {" +
 										"final fr.upmc.dtgui.robot.PositioningData pd = (fr.upmc.dtgui.robot.PositioningData) rsd ;" +
-										runnable1.getName()+" runnable1 = new MyRunnable1(pd, $0.positionDisplay);"+
+										runnable1.getName()+" runnable1 = new "+runnable1.getName()+"(pd, $0.positionDisplay);"+
 										"javax.swing.SwingUtilities.invokeAndWait(runnable1) ;" +
 									"} " +
 									"else {" +
 										"if ($0.tBoard != null) {" +
 											"final fr.upmc.dtgui.robot.RobotStateData rsd1 = rsd ;" +
-											runnable2.getName()+" runnable2 = new MyRunnable2(rsd1,$0.tBoard);"+
+											runnable2.getName()+" runnable2 = new "+runnable2.getName()+"(rsd1,$0.tBoard);"+
 											"javax.swing.SwingUtilities.invokeAndWait(runnable2) ;" +
 										"}" +
 									"}" +

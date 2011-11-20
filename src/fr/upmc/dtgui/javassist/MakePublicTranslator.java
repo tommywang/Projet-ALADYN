@@ -134,10 +134,10 @@ public class MakePublicTranslator implements Translator {
 						robotManager.manageActuatorsFinal(pool, currentClass, listConstructors);
 						
 						/* final management of the actuators of the board */	
-						boardManager.manageFinal(pool, currentClass, classAnnotation);
+						boardManager.manageFinal(pool, currentClass);
 						
 						/* when the teleoperation board is created, the gui is updated */
-						PersonalizedGUIJavassist.update(pool, currentClass);
+						//PersonalizedGUIJavassist.update(pool, currentClass);
 						
 						/*complete the class ActuatorDataReceptor*/
 						ActuatorDataReceptorJavassist.update(pool, currentClass);
