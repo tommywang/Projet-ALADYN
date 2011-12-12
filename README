@@ -1,0 +1,4 @@
+L’objectif de ce projet est de comprendre les possibilités offertes par l’outil Javassist de réflexion au chargement (load-time reflection) 
+par ses outils de génération de code au charge- ment, 
+et ce par la réalisation d’un système de génération automatique et 
+dynamique d’interfaces de téléopération de robot en Java.
