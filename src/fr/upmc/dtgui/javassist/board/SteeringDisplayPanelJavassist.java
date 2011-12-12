@@ -76,7 +76,7 @@ public class SteeringDisplayPanelJavassist {
 			body2 = annotationIntegerActuatorData.unit().name();
 		}
 		if (annotation instanceof BooleanActuatorData){
-			body1 = "0 , 1";
+			body1 = "0.0 , 1.0";
 			body2 = "  ";
 		}
 		
@@ -96,7 +96,7 @@ public class SteeringDisplayPanelJavassist {
 					"steeringSlider.setPaintLabels(true);" +
 					"jpProgressBar.add(steeringSlider) ;" +
 					"$0.add(jpProgressBar, java.awt.BorderLayout.NORTH) ;" +
-					"javax.swing.JLabel steeringLabel = new javax.swing.JLabel(\"Current speed (" + body2 + ")\") ;" +
+					"javax.swing.JLabel steeringLabel = new javax.swing.JLabel(\"Current steering angle (" + body2 + ")\") ;" +
 					"speedLabelPanel = new javax.swing.JPanel() ;" +
 					"speedLabelPanel.add(steeringLabel) ;" +
 					"$0.add(speedLabelPanel, java.awt.BorderLayout.SOUTH) ;" +

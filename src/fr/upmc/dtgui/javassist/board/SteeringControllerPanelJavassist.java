@@ -90,7 +90,7 @@ public class SteeringControllerPanelJavassist {
 				"{" +
 						"$0.setLayout(new java.awt.BorderLayout()) ;" +
 						"$0.setSize(450, 125) ;" +
-						"javax.swing.JLabel steeringLabel = new javax.swing.JLabel(\"Speed control (" + body2 + ")\") ;" +
+						"javax.swing.JLabel steeringLabel = new javax.swing.JLabel(\"Steering angle control (" + body2 + ")\") ;" +
 						"steeringLabelPanel = new javax.swing.JPanel() ;" +
 						"steeringLabelPanel.add(steeringLabel) ;" +
 						"this.add(steeringLabelPanel, java.awt.BorderLayout.SOUTH) ;" +

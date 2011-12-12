@@ -118,6 +118,7 @@ public class BoardManager {
 			/* annotation field groupName = speed */
 			if (annotationRealActuatorData.groupName().equals("energy")){
 				EnergyPanelJavassist.create(pool, currentRobot, board, annotationRealActuatorData);
+				
 			}
 			
 			/* annotation field groupName = speed */

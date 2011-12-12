@@ -93,7 +93,7 @@ public class			LittleRobot		extends Thread
 	/** Position of the robot along the ordinate axis, in meters.		*/
 	protected double	y = 100.0 ;							// m
 	/** Current speed in m/s, >= 0.0 and <= 20.0.						*/
-	protected double	speed = 20.0 ;						// m/s
+	protected double	speed = 10.0 ;						// m/s
 	/** Current energy level as a percentage of remaining energy.		*/
 	protected double	energyLevel = 100.0 ;				// percentage
 	/**
